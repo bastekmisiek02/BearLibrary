@@ -103,6 +103,12 @@ namespace Bear
 			return _IsSame<T, Arg>::value;
 		}
 
+		template<typename Arg>
+		static constexpr bool IsSame()
+		{
+			return _IsSame<T, Arg>::value;
+		}
+
 		static constexpr bool IsPointer()
 		{
 			return _IsPointer<T>::value;

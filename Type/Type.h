@@ -59,8 +59,8 @@ namespace Bear
 			static constexpr bool value = false;
 		};
 
-		template<typename T1>
-		struct _IsSame<T1, T1>
+		template<typename Type>
+		struct _IsSame<Type, Type>
 		{
 			static constexpr bool value = true;
 		};
@@ -73,6 +73,36 @@ namespace Bear
 
 		template<typename Type>
 		struct _IsPointer<Type*>
+		{
+			static constexpr bool value = true;
+		};
+
+		template<typename Type>
+		struct _IsUnsigned
+		{
+			static constexpr bool value = false;
+		};
+
+		template<>
+		struct _IsUnsigned<UChar>
+		{
+			static constexpr bool value = true;
+		};
+
+		template<>
+		struct _IsUnsigned<USInt>
+		{
+			static constexpr bool value = true;
+		};
+
+		template<>
+		struct _IsUnsigned<UInt>
+		{
+			static constexpr bool value = true;
+		};
+
+		template<>
+		struct _IsUnsigned<ULInt>
 		{
 			static constexpr bool value = true;
 		};
@@ -107,6 +137,11 @@ namespace Bear
 		static constexpr bool IsSame()
 		{
 			return _IsSame<T, Arg>::value;
+		}
+
+		static constexpr bool IsSigned()
+		{
+			return !_IsUnsigned<T>::value;
 		}
 
 		static constexpr bool IsPointer()

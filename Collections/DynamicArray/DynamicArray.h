@@ -179,6 +179,31 @@ namespace Bear
 					this->onCollectionLengthChanged(this, (void*)&elements, TypeOfCallback::Add);
 			}
 
+			void AddCollection(const std::initializer_list<T>& elements)
+			{
+				T* array = new T[this->length + elements.size()];
+
+				ULInt i = 0;
+
+				for (i = 0; i < this->length; i++)
+					array[i] = items[i];
+
+				for (auto& it : elements)
+				{
+					array[i] = it;
+					i++;
+				}
+
+				delete[] items;
+
+				items = array;
+
+				this->length += elements.size();
+
+				if (this->onCollectionLengthChanged)
+					this->onCollectionLengthChanged(this, (void*)&elements, TypeOfCallback::Add);
+			}
+
 			/// <summary>
 			/// Add "Element" to dynamic array
 			/// </summary>

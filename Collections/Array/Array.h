@@ -58,7 +58,7 @@ namespace Bear
 			T data[size];
 		public:
 			template<typename... Args>
-			constexpr Array(const Args&&... args)
+			constexpr Array(const Args... args)
 				: ConstBase<T>(size), data{args...}
 			{
 			}
@@ -73,5 +73,12 @@ namespace Bear
 				return Iterator(data + size);
 			}
 		};
+
+		template<typename T, typename... Args>
+		constexpr inline Array<T, sizeof...(Args)> MakeArray(const Args... args)
+		{
+			Collections::Array<T, sizeof...(Args)> value(args...);
+			return value;
+		}
 	}
 }

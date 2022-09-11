@@ -9,7 +9,7 @@ namespace Bear
 	class Image
 	{
 	public:
-		using Color = GraphicsMath::Vec<char, 4>;
+		using Color = GraphicsMath::Vec<UChar, 4>;
 	public:
 		struct ImageInfo
 		{

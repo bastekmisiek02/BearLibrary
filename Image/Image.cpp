@@ -117,7 +117,7 @@ namespace Bear
 				UInt size = 0;
 
 				for (int i = 4; i > 0; i--)
-					size += (Math::Pow(16, 2 * (i - 1)) * fileData[index++]);
+					size += (Math::Pow<UInt>(16, 2 * (i - 1)) * fileData[index++]);
 
 				char name[5];
 				{

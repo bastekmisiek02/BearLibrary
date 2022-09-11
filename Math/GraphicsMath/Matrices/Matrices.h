@@ -4,6 +4,8 @@
 
 #include "Math/GraphicsMath/Vectors/Vectors.h"
 
+#include <math.h>
+
 namespace Bear
 {
 	namespace GraphicsMath
@@ -314,36 +316,6 @@ namespace Bear
 					(data[2][0] * vector.x) + (data[2][1] * vector.y) + (data[2][2] * vector.z)
 				};
 			}
-
-			//Scale
-			//void Scale(const Vec<T, 2>& vector)
-			//{
-			//	data[0][0] * vector.x;
-			//	data[1][1] * vector.y;
-			//}
-			//
-			//void Scale(const Vec<T, 3>& vector)
-			//{
-			//	data[0][0] * vector.x;
-			//	data[1][1] * vector.y;
-			//	data[2][2] * vector.z;
-			//}
-			//
-			//static Matrix<T, rows, columns> CreateScaleMatrix(const Vec<T, 2>& vector)
-			//{
-			//	Matrix<T, columns, rows> matrix;
-			//	matrix.Scale(vector);
-			//
-			//	return matrix;
-			//}
-			//
-			//static Matrix<T, rows, columns> CreateScaleMatrix(const Vec<T, 3>& vector)
-			//{
-			//	Matrix<T, columns, rows> matrix;
-			//	matrix.Scale(vector);
-			//
-			//	return matrix;
-			//}
 		public:
 			T* operator[](const char& index)
 			{
@@ -496,21 +468,113 @@ namespace Bear
 				};
 			}
 
-			////Scale
-			//void Scale(const Vec<T, 3>& vector)
-			//{
-			//	data[0][0] * vector.x;
-			//	data[1][1] * vector.y;
-			//	data[2][2] * vector.z;
-			//}
+			//Translate
+			static Matrix<T, rows, columns> Translate(const Vec<T, 2>& vector)
+			{
+				Matrix<T, columns, rows> matrix;
+				matrix.data[0][3] = vector.x;
+				matrix.data[1][3] = vector.y;
+				matrix.data[2][3] = 0;
+			
+				return matrix;
+			}
+			
+			static Matrix<T, rows, columns> Translate(const Vec<T, 3>& vector)
+			{
+				Matrix<T, columns, rows> matrix;
+				matrix.data[0][3] = vector.x;
+				matrix.data[1][3] = vector.y;
+				matrix.data[2][3] = vector.z;
 
-			//static Matrix<T, rows, columns> CreateScaleMatrix(const Vec<T, 3>& vector)
-			//{
-			//	Matrix<T, columns, rows> matrix;
-			//	matrix.Scale(vector);
+				return matrix;
+			}
+			
+			static Matrix<T, rows, columns> Translate(const Vec<T, 4>& vector)
+			{
+				Matrix<T, columns, rows> matrix;
+				matrix.data[0][0] = vector.x;
+				matrix.data[1][1] = vector.y;
+				matrix.data[2][2] = vector.z;
+			
+				return matrix;
+			}
+			
+			//Rotation			
+			static Matrix<T, rows, columns> RotateX(const T& angle)
+			{
+				const T sin = ::sin(angle);
+				const T cos = ::cos(angle);
 
-			//	return matrix;
-			//}
+				Matrix<T, columns, rows> matrix;
+				matrix.data[1][1] = cos;
+				matrix.data[1][2] = -sin;
+
+				matrix.data[2][1] = sin;
+				matrix.data[2][2] = cos;
+			
+				return matrix;
+			}
+
+			static Matrix<T, rows, columns> RotateY(const T& angle)
+			{
+				const T sin = ::sin(angle);
+				const T cos = ::cos(angle);
+
+				Matrix<T, columns, rows> matrix;
+				matrix.data[0][0] = cos;
+				matrix.data[0][2] = sin;
+
+				matrix.data[2][0] = -sin;
+				matrix.data[2][2] = cos;
+
+				return matrix;
+			}
+
+			static Matrix<T, rows, columns> RotateZ(const T& angle)
+			{
+				const T sin = ::sin(angle);
+				const T cos = ::cos(angle);
+
+				Matrix<T, columns, rows> matrix;
+				matrix.data[0][0] = cos;
+				matrix.data[0][1] = -sin;
+
+				matrix.data[1][0] = sin;
+				matrix.data[1][1] = cos;
+
+				return matrix;
+			}
+			
+			//Scale
+			static Matrix<T, rows, columns> Scale(const Vec<T, 2>& vector)
+			{
+				Matrix<T, columns, rows> matrix;
+				matrix.data[0][0] = vector.x;
+				matrix.data[1][1] = vector.y;
+
+				return matrix;
+			}
+
+			static Matrix<T, rows, columns> Scale(const Vec<T, 3>& vector)
+			{
+				Matrix<T, columns, rows> matrix;
+				matrix.data[0][0] = vector.x;
+				matrix.data[1][1] = vector.y;
+				matrix.data[2][2] = vector.z;
+
+				return matrix;
+			}
+
+			static Matrix<T, rows, columns> Scale(const Vec<T, 4>& vector)
+			{
+				Matrix<T, columns, rows> matrix;
+				matrix.data[0][0] = vector.x;
+				matrix.data[1][1] = vector.y;
+				matrix.data[2][2] = vector.z;
+				matrix.data[3][3] = vector.w;
+
+				return matrix;
+			}
 		public:
 			T* operator[](const char& index)
 			{

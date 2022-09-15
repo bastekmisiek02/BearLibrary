@@ -85,8 +85,26 @@ namespace Bear
 			*stop = true;
 	}
 
-	const float Timer::GetTime() const
+	ULInt Timer::GetTime(const Duration& duration) const
 	{
-		return ((std::chrono::duration<float>)(std::chrono::high_resolution_clock::now() - *(std::chrono::steady_clock::time_point*)start)).count();
+		auto&& diffrence = std::chrono::high_resolution_clock::now() - *(std::chrono::steady_clock::time_point*)start;
+
+		switch (duration)
+		{
+			case Timer::Duration::Nanoseconds:
+				return (std::chrono::duration_cast<std::chrono::nanoseconds>(diffrence)).count();
+			case Timer::Duration::Microseconds:
+				return (std::chrono::duration_cast<std::chrono::microseconds>(diffrence)).count();
+			case Timer::Duration::Milliseconds:
+				return (std::chrono::duration_cast<std::chrono::milliseconds>(diffrence)).count();
+			case Timer::Duration::Seconds:
+				return (std::chrono::duration_cast<std::chrono::seconds>(diffrence)).count();
+			case Timer::Duration::Minutes:
+				return (std::chrono::duration_cast<std::chrono::minutes>(diffrence)).count();
+			case Timer::Duration::Hours:
+				return (std::chrono::duration_cast<std::chrono::hours>(diffrence)).count();
+			default:
+				break;
+		}
 	}
 }

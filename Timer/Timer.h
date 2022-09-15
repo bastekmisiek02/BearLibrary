@@ -32,6 +32,6 @@ namespace Bear
 	public:
 		void Stop() const;
 
-		const float GetTime() const;
+		ULInt GetTime(const Duration& duration = Duration::Milliseconds) const;
 	};
 }

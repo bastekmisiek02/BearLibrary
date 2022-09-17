@@ -163,7 +163,7 @@ namespace Bear
 			Visible = 1
 		};
 	private:
-		static friend LInt WinProc(void* instance, UInt msg, ULInt wParam, LInt lParam);
+		static LInt WinProc(void* instance, UInt msg, ULInt wParam, LInt lParam);
 	private:
 		Style style;
 		bool destroyed;

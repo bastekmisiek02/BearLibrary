@@ -19,7 +19,7 @@ namespace Bear
 		return nullptr;
 	}
 
-	static LInt WinProc(void* instance, UInt msg, ULInt wParam, LInt lParam)
+	LInt Window::WinProc(void* instance, UInt msg, ULInt wParam, LInt lParam)
 	{
 		HWND attachment = (HWND)instance;
 

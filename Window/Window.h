@@ -10,6 +10,7 @@ namespace Bear
 	{
 	private:
 		void* handle;
+		void* instance;
 		const char* nameClass;
 
 		const char* title;

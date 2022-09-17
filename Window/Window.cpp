@@ -3,7 +3,6 @@
 #include <Windows.h>
 
 #include "Collections/DynamicArray/DynamicArray.h"
-#include "Collections/String/String.h"
 
 namespace Bear
 {

@@ -4,6 +4,15 @@ namespace Bear
 {
 	namespace Math
 	{
+		template<typename T>
+		constexpr T Abs(const T& value)
+		{
+			if (value < (T)0)
+				return -value;
+
+			return value;
+		}
+
 		template<typename T, typename... Args>
 		constexpr T Add(const Args&&... args)
 		{
@@ -39,14 +48,12 @@ namespace Bear
 			return value;
 		}
 
-		template<typename T>
-		constexpr T Sqrt(const T& value)
+		constexpr double Sqrt(const double& value)
 		{
-			T x = value / 2;
+			double x = value / 2;
 			
-			T quotient = value / x;
+			double quotient = value / x;
 
-			//TODO: Zmieniæ jeœli bêdzie Type::IsSigned(bo jeœli jest unsigned to nie trza tego absa) i dla is_floating(bo jeœli jest to jest int lub char to nie trza takiej precyzji)
 			while (Abs<double>(x - quotient) > 0.000001)
 			{
 				x = (x + quotient) / 2;
@@ -58,15 +65,6 @@ namespace Bear
 			}
 			
 			return x;
-		}
-
-		template<typename T>
-		constexpr T Abs(const T& value)
-		{
-			if (value < (T)0)
-				return -value;
-
-			return value;
 		}
 	}
 }

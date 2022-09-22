@@ -608,11 +608,11 @@ namespace Bear
 				};
 			};
 
-			Vec() : x((T)0.0), y((T)0.0), z((T)0.0), w((T)0.0) {}
+			Vec() : x((T)0.0), y((T)0.0), z((T)0.0), w((T)1.0) {}
 			Vec(const T& value) : x(value), y(value), z(value), w(value) {}
 			Vec(const T& x, const T& y, const T& z, const T& w) : x(x), y(y), z(z), w(w) {}
-			Vec(const Vec<T, 2>& other) : x(other.x), y(other.y), z((T)0.0), w((T)0.0) {}
-			Vec(const Vec<T, 3>& other) : x(other.x), y(other.y), z(other.z), w((T)0.0) {}
+			Vec(const Vec<T, 2>& other) : x(other.x), y(other.y), z((T)0.0), w((T)1.0) {}
+			Vec(const Vec<T, 3>& other) : x(other.x), y(other.y), z(other.z), w((T)1.0) {}
 			Vec(const Vec<T, 4>& other) : x(other.x), y(other.y), z(other.z), w(other.w) {}
 
 			Vec<T, 4>& operator-()

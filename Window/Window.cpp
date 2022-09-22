@@ -3,7 +3,6 @@
 #include <Windows.h>
 
 #include "Collections/DynamicArray/DynamicArray.h"
-#include "Collections/String/String.h"
 
 namespace Bear
 {
@@ -20,7 +19,7 @@ namespace Bear
 		return nullptr;
 	}
 
-	static LInt WinProc(void* instance, UInt msg, ULInt wParam, LInt lParam)
+	LInt Window::WinProc(void* instance, UInt msg, ULInt wParam, LInt lParam)
 	{
 		HWND attachment = (HWND)instance;
 
@@ -226,6 +225,8 @@ namespace Bear
 			SetParent((HWND)this->handle, (HWND)parent->handle);
 
 		this->title = title;
+
+		instance = (HINSTANCE)GetModuleHandleA(nullptr);
 	}
 
 	Window::Window(const Vector& size, const Vector& position, const char* title, const char* pointerFileName, const Window* parent, const char* className, const char* pathToTaskBarImage, const char* pathToImage, const State& windowState, const Style& windowStyle)
@@ -264,6 +265,8 @@ namespace Bear
 			SetParent((HWND)this->handle, (HWND)parent->handle);
 
 		this->title = title;
+
+		instance = (HINSTANCE)GetModuleHandleA(nullptr);
 	}
 
 	Window::~Window()
@@ -280,7 +283,7 @@ namespace Bear
 
 	void* Window::GetInstance() const
 	{
-		return (HINSTANCE)GetModuleHandleA(nullptr);
+		return instance;
 	}
 
 	const char* Window::GetTitle() const

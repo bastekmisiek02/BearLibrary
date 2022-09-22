@@ -9,7 +9,7 @@ namespace Bear
 	class Image
 	{
 	public:
-		using Color = GraphicsMath::Vec<char, 4>;
+		using Color = GraphicsMath::Vec<UChar, 4>;
 	public:
 		struct ImageInfo
 		{
@@ -28,7 +28,7 @@ namespace Bear
 		Image(const char* path);
 		~Image();
 	public:
-		const Color* const GetData() const;
+		Color* GetData() const;
 		ImageInfo GetImageInfo() const;
 	public:
 		void SaveToFile(const char* path);

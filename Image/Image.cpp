@@ -117,7 +117,7 @@ namespace Bear
 				UInt size = 0;
 
 				for (int i = 4; i > 0; i--)
-					size += (Math::Pow(16, 2 * (i - 1)) * fileData[index++]);
+					size += (Math::Pow<UInt>(16, 2 * (i - 1)) * fileData[index++]);
 
 				char name[5];
 				{
@@ -223,7 +223,7 @@ namespace Bear
 		return imageInfo;
 	}
 
-	const Image::Color* const Image::GetData() const
+	Image::Color* Image::GetData() const
 	{
 		return data;
 	}

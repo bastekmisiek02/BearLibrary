@@ -296,6 +296,64 @@ namespace Bear
 					this->onCollectionLengthChanged(this, nullptr, TypeOfCallback::Remove);
 			}
 
+			void RemoveOnIndex(const ULInt& start, const ULInt& end)
+			{
+				if (!this->length)
+					return;
+
+				if (start >= this->length || end >= this->length)
+					throw CollectionExceptions::OutOfRange;
+
+				if (start > end)
+					throw CollectionExceptions::StartIndexGreaterThanEnd;
+
+				ListElement* element = firstElement;
+				ULInt i = 0;
+
+				for (; i < this->length; i++)
+				{
+					if (i == start)
+						break;
+
+					element = element->next;
+				}
+
+				i = end - start;
+
+				for (ULInt j = 0; j <= i; j++)
+				{
+					if (element == firstElement)
+					{
+						firstElement = firstElement->next;
+						firstElement->previous = nullptr;
+						delete element;
+
+						element = firstElement;
+					}
+					else if (element == lastElement)
+					{
+						lastElement = lastElement->previous;
+						lastElement->next = nullptr;
+						delete element;
+
+						element = lastElement;
+					}
+					else
+					{
+						ListElement* previous = element->previous;
+						ListElement* next = element->next;
+
+						delete element;
+						element = next;
+
+						previous->next = next;
+						next->previous = previous;
+					}
+				}
+
+				this->length -= (i + 1);
+			}
+
 			template<bool RemoveAll = false>
 			void RemoveCollection(const List<T>& elements)
 			{

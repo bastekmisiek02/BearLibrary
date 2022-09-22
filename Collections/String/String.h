@@ -204,6 +204,9 @@ namespace Bear
 
 			template<typename T>
 			static const T ConvertTo(const char* value);
+		public:
+			template<typename T>
+			static String ToString(const T& value);
 		};
 
 		template<>

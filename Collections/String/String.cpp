@@ -544,6 +544,525 @@ namespace Bear
 			return Compare((char*)first, (char*)second);
 		}
 
+		/*ToString*/
+
+		/*char*/
+		template<>
+		String String::ToString(const char& value)
+		{
+			typedef char Type;
+
+			String returnValue;
+
+			if (!value)
+			{
+				returnValue.str = new char[2]{ '0','\0' };
+				returnValue.length = 1;
+
+				return returnValue;
+			}
+
+			char* ptr = nullptr;
+
+			if (value > 0)
+			{
+				returnValue.str = new char[4];
+				ptr = returnValue.str;
+			}
+			else
+			{
+				returnValue.str = new char[5];
+				returnValue.str[0] = '-';
+				returnValue.length++;
+				ptr = &returnValue.str[1];
+			}
+
+			Type tmp = Math::Abs<Type>(value);
+			Type multiplier = 100;
+			Type result = tmp / multiplier;
+			bool pass = false;
+
+			if (result)
+			{
+				*ptr = (result + '0');
+				returnValue.length++;
+				ptr++;
+
+				tmp -= (result * multiplier);
+				pass = true;
+			}
+
+			multiplier = 10;
+
+			result = tmp / multiplier;
+
+			if (result || pass)
+			{
+				*ptr = (result + '0');
+				returnValue.length++;
+				ptr++;
+				tmp -= (result * multiplier);
+			}
+
+			*ptr = tmp + '0';
+			ptr++;
+			returnValue.length++;
+
+			*ptr = '\0';
+
+			return returnValue;
+		}
+
+		/*UChar*/
+		template<>
+		String String::ToString(const UChar& value)
+		{
+			typedef UChar Type;
+
+			String returnValue;
+
+			if (!value)
+			{
+				returnValue.str = new char[2]{ '0','\0' };
+				returnValue.length = 1;
+
+				return returnValue;
+			}
+
+			returnValue.str = new char[4];
+			char* ptr = returnValue.str;
+
+			Type tmp = value;
+			Type multiplier = 100;
+			Type result = tmp / multiplier;
+			bool pass = false;
+
+			if (result)
+			{
+				*ptr = (result + '0');
+				returnValue.length++;
+				ptr++;
+
+				tmp -= (result * multiplier);
+				pass = true;
+			}
+
+			multiplier = 10;
+
+			result = tmp / multiplier;
+
+			if (result || pass)
+			{
+				*ptr = (result + '0');
+				returnValue.length++;
+				ptr++;
+				tmp -= (result * multiplier);
+			}
+
+			*ptr = tmp + '0';
+			ptr++;
+			returnValue.length++;
+
+			*ptr = '\0';
+
+			return returnValue;
+		}
+
+		/*SInt*/
+		template<>
+		String String::ToString(const SInt& value)
+		{
+			typedef SInt Type;
+
+			String returnValue;
+
+			if (!value)
+			{
+				returnValue.str = new char[2]{ '0', '\0' };
+				returnValue.length = 1;
+
+				return returnValue;
+			}
+
+			char* ptr = nullptr;
+
+			if (value > 0)
+			{
+				returnValue.str = new char[6];
+				ptr = returnValue.str;
+			}
+			else
+			{
+				returnValue.str = new char[7];
+				returnValue.str[0] = '-';
+				returnValue.length++;
+				ptr = &returnValue.str[1];
+			}
+
+			Type tmp = Math::Abs<Type>(value);
+			Type multiplier = 10000;
+			Type result = tmp / multiplier;
+			bool pass = false;
+
+			if (result)
+			{
+				*ptr = (result + '0');
+				returnValue.length++;
+				ptr++;
+
+				tmp -= (result * multiplier);
+				pass = true;
+			}
+
+			while (multiplier > 10)
+			{
+				multiplier /= 10;
+
+				result = tmp / multiplier;
+
+				if (result || pass)
+				{
+					*ptr = (result + '0');
+					returnValue.length++;
+					ptr++;
+					tmp -= (result * multiplier);
+					pass = true;
+				}
+			}
+
+			*ptr = tmp + '0';
+			ptr++;
+			returnValue.length++;
+
+			*ptr = '\0';
+
+			return returnValue;
+		}
+
+		/*USInt*/
+		template<>
+		String String::ToString(const USInt& value)
+		{
+			typedef USInt Type;
+
+			String returnValue;
+
+			if (!value)
+			{
+				returnValue.str = new char[2]{ '0', '\0' };
+				returnValue.length = 1;
+
+				return returnValue;
+			}
+
+			returnValue.str = new char[6];
+
+			char* ptr = returnValue.str;
+
+			Type tmp = value;
+			Type multiplier = 10000;
+			Type result = tmp / multiplier;
+			bool pass = false;
+
+			if (result)
+			{
+				*ptr = (result + '0');
+				returnValue.length++;
+				ptr++;
+
+				tmp -= (result * multiplier);
+				pass = true;
+			}
+
+			while (multiplier > 10)
+			{
+				multiplier /= 10;
+
+				result = tmp / multiplier;
+
+				if (result || pass)
+				{
+					*ptr = (result + '0');
+					returnValue.length++;
+					ptr++;
+					tmp -= (result * multiplier);
+					pass = true;
+				}
+			}
+
+			*ptr = tmp + '0';
+			ptr++;
+			returnValue.length++;
+
+			*ptr = '\0';
+
+			return returnValue;
+		}
+
+		/*int*/
+		template<>
+		String String::ToString(const int& value)
+		{
+			typedef int Type;
+
+			String returnValue;
+
+			if (!value)
+			{
+				returnValue.str = new char[2]{ '0', '\0' };
+				returnValue.length = 1;
+
+				return returnValue;
+			}
+
+			char* ptr = nullptr;
+
+			if (value > 0)
+			{
+				returnValue.str = new char[11];
+				ptr = returnValue.str;
+			}
+			else
+			{
+				returnValue.str = new char[12];
+				returnValue.str[0] = '-';
+				returnValue.length++;
+				ptr = &returnValue.str[1];
+			}
+
+			Type tmp = Math::Abs<Type>(value);
+			Type multiplier = 1000000000;
+			Type result = tmp / multiplier;
+			bool pass = false;
+
+			if (result)
+			{
+				*ptr = (result + '0');
+				returnValue.length++;
+				ptr++;
+
+				tmp -= (result * multiplier);
+				pass = true;
+			}
+
+			while (multiplier > 10)
+			{
+				multiplier /= 10;
+
+				result = tmp / multiplier;
+
+				if (result || pass)
+				{
+					*ptr = (result + '0');
+					returnValue.length++;
+					ptr++;
+					tmp -= (result * multiplier);
+					pass = true;
+				}
+			}
+
+			*ptr = tmp + '0';
+			ptr++;
+			returnValue.length++;
+
+			*ptr = '\0';
+
+			return returnValue;
+		}
+
+		/*UInt*/
+		template<>
+		String String::ToString(const UInt& value)
+		{
+			typedef UInt Type;
+
+			String returnValue;
+
+			if (!value)
+			{
+				returnValue.str = new char[2]{ '0', '\0' };
+				returnValue.length = 1;
+
+				return returnValue;
+			}
+
+			returnValue.str = new char[11];
+
+			char* ptr = returnValue.str;
+
+			Type tmp = value;
+			Type multiplier = 1000000000;
+			Type result = tmp / multiplier;
+			bool pass = false;
+
+			if (result)
+			{
+				*ptr = (result + '0');
+				returnValue.length++;
+				ptr++;
+
+				tmp -= (result * multiplier);
+				pass = true;
+			}
+
+			while (multiplier > 10)
+			{
+				multiplier /= 10;
+
+				result = tmp / multiplier;
+
+				if (result || pass)
+				{
+					*ptr = (result + '0');
+					returnValue.length++;
+					ptr++;
+					tmp -= (result * multiplier);
+					pass = true;
+				}
+			}
+
+			*ptr = tmp + '0';
+			ptr++;
+			returnValue.length++;
+
+			*ptr = '\0';
+
+			return returnValue;
+		}
+
+		/*LInt*/
+		template<>
+		String String::ToString(const LInt& value)
+		{
+			typedef LInt Type;
+
+			String returnValue;
+
+			if (!value)
+			{
+				returnValue.str = new char[2]{ '0', '\0' };
+				returnValue.length = 1;
+
+				return returnValue;
+			}
+
+			char* ptr = nullptr;
+
+			if (value > 0)
+			{
+				returnValue.str = new char[20];
+				ptr = returnValue.str;
+			}
+			else
+			{
+				returnValue.str = new char[21];
+				returnValue.str[0] = '-';
+				returnValue.length++;
+				ptr = &returnValue.str[1];
+			}
+
+			Type tmp = Math::Abs<Type>(value);
+			Type multiplier = 1000000000000000000;
+			Type result = tmp / multiplier;
+			bool pass = false;
+
+			if (result)
+			{
+				*ptr = (result + '0');
+				returnValue.length++;
+				ptr++;
+
+				tmp -= (result * multiplier);
+				pass = true;
+			}
+
+			while (multiplier > 10)
+			{
+				multiplier /= 10;
+
+				result = tmp / multiplier;
+
+				if (result || pass)
+				{
+					*ptr = (result + '0');
+					returnValue.length++;
+					ptr++;
+					tmp -= (result * multiplier);
+					pass = true;
+				}
+			}
+
+			*ptr = tmp + '0';
+			ptr++;
+			returnValue.length++;
+
+			*ptr = '\0';
+
+			return returnValue;
+		}
+
+		/*ULInt*/
+		template<>
+		String String::ToString(const ULInt& value)
+		{
+			typedef ULInt Type;
+
+			String returnValue;
+
+			if (!value)
+			{
+				returnValue.str = new char[2]{ '0', '\0' };
+				returnValue.length = 1;
+
+				return returnValue;
+			}
+
+			returnValue.str = new char[21];
+
+			char* ptr = returnValue.str;
+
+			Type tmp = value;
+			Type multiplier = 10000000000000000000;
+			Type result = tmp / multiplier;
+			bool pass = false;
+
+			if (result)
+			{
+				*ptr = (result + '0');
+				returnValue.length++;
+				ptr++;
+
+				tmp -= (result * multiplier);
+				pass = true;
+			}
+
+			while (multiplier > 10)
+			{
+				multiplier /= 10;
+
+				result = tmp / multiplier;
+
+				if (result || pass)
+				{
+					*ptr = (result + '0');
+					returnValue.length++;
+					ptr++;
+					tmp -= (result * multiplier);
+					pass = true;
+				}
+			}
+
+			*ptr = tmp + '0';
+			ptr++;
+			returnValue.length++;
+
+			*ptr = '\0';
+
+			return returnValue;
+		}
+
+		/*ConvertTo*/
+
 		/*LInt*/
 		template<>
 		const LInt String::ConvertTo(char* value)

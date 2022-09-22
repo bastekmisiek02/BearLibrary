@@ -28,7 +28,7 @@ namespace Bear
 		Image(const char* path);
 		~Image();
 	public:
-		const Color* const GetData() const;
+		Color* GetData() const;
 		ImageInfo GetImageInfo() const;
 	public:
 		void SaveToFile(const char* path);

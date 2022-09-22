@@ -223,7 +223,7 @@ namespace Bear
 		return imageInfo;
 	}
 
-	const Image::Color* const Image::GetData() const
+	Image::Color* Image::GetData() const
 	{
 		return data;
 	}

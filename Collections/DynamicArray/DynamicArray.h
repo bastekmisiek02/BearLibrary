@@ -2,8 +2,6 @@
 
 #include "../Base.h"
 
-#include <vector>
-
 namespace Bear
 {
 	namespace Collections
@@ -20,35 +18,27 @@ namespace Bear
 			/// Array of items in list
 			/// </summary>
 			T* items;
+		private:
+			bool moved;
+		private:
+			template<typename T, typename... Args>
+			friend inline DynamicArray<T> MakeDynamicArray(const Args... args);
 		public:
 			using Iterator = Iterator<T, DynamicArrayIterator>;
 		public:
-			/// <summary>
-			/// Create dynamicArray from std::initializer_list
-			/// </summary>
-			/// <param name="list"></param>
-			DynamicArray(const std::initializer_list<T>& list)
+			DynamicArray(DynamicArray<T>&& elements) noexcept
+				: Base<T>(elements.length), items(elements.items), moved(false)
 			{
-				this->length = list.size();
-
-				items = new T[this->length];
-
-				auto it = list.begin();
-				for (ULInt i = 0; i < this->length; i++)
-				{
-					items[i] = *it;
-					it++;
-				}
+				elements.moved = true;
 			}
 
 			/// <summary>
 			/// Create dynamic array with this->length of Elements.Length() and copy data from "Elements" to this->items
 			/// </summary>
 			/// <param name="Elements">- DynamicArray from where will be copy data</param>
-			DynamicArray(const DynamicArray<T>& elements)
+			DynamicArray(DynamicArray<T>& elements)
+				: Base<T>(elements.length), moved(false)
 			{
-				this->length = elements.length;
-
 				items = new T[elements.length];
 
 				for (ULInt i = 0; i < elements.length; i++)
@@ -60,9 +50,8 @@ namespace Bear
 			/// </summary>
 			/// <param name="Length">- Length of elements</param>
 			DynamicArray(const ULInt& length)
+				: Base<T>(length), moved(false)
 			{
-				this->length = length;
-
 				items = new T[this->length];
 			}
 
@@ -72,9 +61,8 @@ namespace Bear
 			/// <param name="Array">- Array from where will be copy data</param>
 			/// <param name="Length">- Length of elements</param>
 			DynamicArray(const T* array, const ULInt& length)
+				: Base<T>(length), moved(false)
 			{
-				this->length = length;
-
 				items = new T[this->length];
 
 				for (ULInt i = 0; i < this->length; i++)
@@ -87,6 +75,7 @@ namespace Bear
 			/// <param name="Length">- Dynamic array size</param>
 			/// <param name="Value">- All items will be the same "Value"</param>
 			DynamicArray(const ULInt& length, const T& value)
+				: moved(false)
 			{
 				Resize(length, value);
 			}
@@ -95,7 +84,7 @@ namespace Bear
 			/// Create an empty dynamic array of size 0
 			/// </summary>
 			DynamicArray()
-				: items(nullptr)
+				: items(nullptr), moved(false)
 			{
 			}
 
@@ -174,31 +163,6 @@ namespace Bear
 				items = array;
 
 				this->length += elements.Length();
-
-				if (this->onCollectionLengthChanged)
-					this->onCollectionLengthChanged(this, (void*)&elements, TypeOfCallback::Add);
-			}
-
-			void AddCollection(const std::initializer_list<T>& elements)
-			{
-				T* array = new T[this->length + elements.size()];
-
-				ULInt i = 0;
-
-				for (i = 0; i < this->length; i++)
-					array[i] = items[i];
-
-				for (auto& it : elements)
-				{
-					array[i] = it;
-					i++;
-				}
-
-				delete[] items;
-
-				items = array;
-
-				this->length += elements.size();
 
 				if (this->onCollectionLengthChanged)
 					this->onCollectionLengthChanged(this, (void*)&elements, TypeOfCallback::Add);
@@ -569,12 +533,15 @@ namespace Bear
 			/// </summary>
 			virtual void Clear() override
 			{
-				delete[] items;
-				items = nullptr;
-				this->length = 0;
+				if (!moved)
+				{
+					delete[] items;
+					items = nullptr;
+					this->length = 0;
 
-				if (this->onCollectionLengthChanged)
-					this->onCollectionLengthChanged(this, nullptr, TypeOfCallback::Destroy);
+					if (this->onCollectionLengthChanged)
+						this->onCollectionLengthChanged(this, nullptr, TypeOfCallback::Destroy);
+				}
 			}
 
 			/// <summary>
@@ -876,5 +843,16 @@ namespace Bear
 				return !(*this == other);
 			}
 		};
+
+		template<typename T, typename... Args>
+		inline DynamicArray<T> MakeDynamicArray(const Args... args)
+		{
+			constexpr ULInt length = sizeof...(Args);
+
+			DynamicArray<T> returnValue;
+			returnValue.length = length;
+			returnValue.items = new T[length]{ args... };
+			return returnValue;
+		}
 	}
 }

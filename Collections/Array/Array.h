@@ -63,6 +63,16 @@ namespace Bear
 			{
 			}
 
+			const T* Data() const
+			{
+				return data;
+			}
+
+			constexpr ULInt Length() const
+			{
+				return size;
+			}
+
 			constexpr Iterator begin() const
 			{
 				return Iterator(data);

@@ -74,11 +74,6 @@ namespace Bear
 			{
 			}
 		public:
-			constexpr ULInt Length()
-			{
-				return this->length;
-			}
-		public:
 			static constexpr ULInt GetMaxLength()
 			{
 				#ifdef WIN32

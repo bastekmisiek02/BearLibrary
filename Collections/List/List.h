@@ -431,10 +431,73 @@ namespace Bear
 				}
 			}
 
-			template<bool RemoveAll = false>
-			void RemoveCollection(const Base<T>* elements)
+			template<typename Collection, bool RemoveAll = false>
+			void RemoveCollection(const Collection& collection)
 			{
-				//TODO: Dokoñczyæ
+				if (!collection.Length() || !this->length)
+					return;
+
+				if constexpr (!RemoveAll)
+				{
+					for (auto& it : collection)
+						Remove(it);
+				}
+				else
+				{
+					ListElement* it = firstElement;
+
+					while (it)
+					{
+						bool removed = false;
+
+						for (auto& index : collection)
+						{
+							if (it->element == index)
+							{
+								ListElement* deleteItem = it;
+
+								if (it != firstElement)
+								{
+									it->previous->next = it->next;
+
+									if (it != lastElement)
+										it->next->previous = it->previous;
+									else
+										lastElement = it->previous;
+
+									it = it->next;
+								}
+								else
+								{
+									if (this->length > 1)
+									{
+										it->next->previous = nullptr;
+
+										firstElement = it->next;
+									}
+									else
+									{
+										firstElement = nullptr;
+										lastElement = nullptr;
+									}
+
+									it = firstElement;
+								}
+
+								delete deleteItem;
+
+								this->length--;
+
+								removed = true;
+
+								break;
+							}
+						}
+
+						if (!removed)
+							it = it->next;
+					}
+				}
 			}
 
 			virtual void Clear() override

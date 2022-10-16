@@ -1061,6 +1061,252 @@ namespace Bear
 			return returnValue;
 		}
 
+		/*float*/
+		template<>
+		String String::ToString(const float& value)
+		{
+			typedef float Type;
+
+			String returnValue;
+
+			if (!value)
+			{
+				returnValue.str = new char[2] { '0', '\0' };
+				returnValue.length = 1;
+
+				return returnValue;
+			}
+
+			char* ptr = nullptr;
+			ULInt size = 86;
+
+			if (value > 0)
+			{
+				returnValue.str = new char[size];
+				ptr = returnValue.str;
+			}
+			else
+			{
+				returnValue.str = new char[size + 1];
+				returnValue.str[0] = '-';
+				returnValue.length++;
+				ptr = &returnValue.str[1];
+			}
+
+			Type tmp = Math::Abs<Type>(value);
+			Type multiplier = 1.0e+38f;
+			ULInt result = tmp / multiplier;
+
+			bool pass = false;
+
+			if (result)
+			{
+				*ptr = (result + '0');
+				returnValue.length++;
+				ptr++;
+
+				tmp -= (result * multiplier);
+				pass = true;
+			}
+
+			while (multiplier > 10)
+			{
+				multiplier /= 10;
+
+				result = tmp / multiplier;
+
+				if (result || pass)
+				{
+					*ptr = (result + '0');
+					returnValue.length++;
+					ptr++;
+					tmp -= (result * multiplier);
+					pass = true;
+				}
+			}
+
+			*ptr = tmp + '0';
+			ptr++;
+			returnValue.length++;
+			
+			tmp -= (ULInt)tmp;
+
+			if (tmp == 0)
+			{
+				*ptr = '\0';
+				return returnValue;
+			}
+
+			//float
+			*ptr = '.';
+			ptr++;
+			returnValue.length++;
+
+			char* last = nullptr;
+
+			size += (ULInt)(returnValue.str - 1);
+
+			while ((ULInt)ptr < size)
+			{
+				tmp *= 10.f;
+				result = tmp;
+				tmp -= result;
+
+				if (!result)
+				{
+					if (!last)
+						last = ptr;
+				}
+				else
+					last = nullptr;
+
+				*ptr = result + '0';
+				ptr++;
+
+				returnValue.length++;
+
+				if (!tmp)
+					break;
+			}
+
+			if (last)
+			{
+				returnValue.length += ptr - last;
+
+				if (*(last - 1) == '.')
+					ptr = last - 1;
+				else
+					ptr = last;
+			}
+
+			*ptr = '\0';
+
+			return returnValue;
+		}
+
+		/*double*/
+		template<>
+		String String::ToString(const double& value)
+		{
+			typedef double Type;
+
+			String returnValue;
+
+			if (!value)
+			{
+				returnValue.str = new char[2] { '0', '\0' };
+				returnValue.length = 1;
+
+				return returnValue;
+			}
+
+			char* ptr = nullptr;
+			ULInt size = 636;
+
+			if (value > 0)
+			{
+				returnValue.str = new char[size];
+				ptr = returnValue.str;
+			}
+			else
+			{
+				returnValue.str = new char[size + 1];
+				returnValue.str[0] = '-';
+				returnValue.length++;
+				ptr = &returnValue.str[1];
+			}
+
+			Type tmp = Math::Abs<Type>(value);
+			Type multiplier = 1.0e+308;
+			ULInt result = tmp / multiplier;
+
+			bool pass = false;
+
+			if (result)
+			{
+				*ptr = (result + '0');
+				returnValue.length++;
+				ptr++;
+
+				tmp -= (result * multiplier);
+				pass = true;
+			}
+
+			while (multiplier > 10)
+			{
+				multiplier /= 10;
+
+				result = tmp / multiplier;
+
+				if (result || pass)
+				{
+					*ptr = (result + '0');
+					returnValue.length++;
+					ptr++;
+					tmp -= (result * multiplier);
+					pass = true;
+				}
+			}
+
+			*ptr = tmp + '0';
+			ptr++;
+			returnValue.length++;
+
+			tmp -= (ULInt)tmp;
+
+			if (tmp == 0)
+			{
+				*ptr = '\0';
+				return returnValue;
+			}
+
+			//float
+			*ptr = '.';
+			ptr++;
+			returnValue.length++;
+
+			char* last = nullptr;
+
+			size += (ULInt)(returnValue.str - 1);
+
+			while ((ULInt)ptr < size)
+			{
+				tmp *= 10.f;
+				result = tmp;
+				tmp -= result;
+
+				if (!result)
+				{
+					if (!last)
+						last = ptr;
+				}
+				else
+					last = nullptr;
+
+				*ptr = result + '0';
+				ptr++;
+
+				returnValue.length++;
+
+				if (!tmp)
+					break;
+			}
+
+			if (last)
+			{
+				returnValue.length += ptr - last;
+
+				if (*(last - 1) == '.')
+					ptr = last - 1;
+				else
+					ptr = last;
+			}
+
+			*ptr = '\0';
+
+			return returnValue;
+		}
+
 		/*ConvertTo*/
 
 		/*LInt*/

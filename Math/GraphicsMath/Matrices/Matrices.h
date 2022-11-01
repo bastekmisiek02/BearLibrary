@@ -10,7 +10,7 @@ namespace Bear
 {
 	namespace GraphicsMath
 	{
-		template<typename T, char rows, char columns>
+		template<typename T, UChar rows, UChar columns>
 		struct Matrix
 		{
 			Matrix();
@@ -27,15 +27,15 @@ namespace Bear
 			void operator-=(const Matrix& matrix);
 			Matrix operator-(const Matrix& matrix);
 
-			T* operator[](const char& index);
+			T* operator[](const UChar& index);
 		};
 
 		template<typename T>
 		struct Matrix<T, 2, 2>
 		{
 		private:
-			static constexpr char rows = 2;
-			static constexpr char columns = 2;
+			static constexpr UChar rows = 2;
+			static constexpr UChar columns = 2;
 		private:
 			T data[rows][columns];
 		public:
@@ -49,9 +49,9 @@ namespace Bear
 			//+
 			void operator+=(const T& scalar)
 			{
-				for (char i = 0; i < rows; i++)
+				for (UChar i = 0; i < rows; i++)
 				{
-					for (char j = 0; j < columns; j++)
+					for (UChar j = 0; j < columns; j++)
 						data[i][j] += scalar;
 				}
 			}
@@ -66,9 +66,9 @@ namespace Bear
 			//-
 			void operator-=(const T& scalar)
 			{
-				for (char i = 0; i < rows; i++)
+				for (UChar i = 0; i < rows; i++)
 				{
-					for (char j = 0; j < columns; j++)
+					for (UChar j = 0; j < columns; j++)
 						data[i][j] -= scalar;
 				}
 			}
@@ -83,9 +83,9 @@ namespace Bear
 			//*
 			void operator*=(const T& scalar)
 			{
-				for (char i = 0; i < rows; i++)
+				for (UChar i = 0; i < rows; i++)
 				{
-					for (char j = 0; j < columns; j++)
+					for (UChar j = 0; j < columns; j++)
 						data[i][j] *= scalar;
 				}
 			}
@@ -102,9 +102,9 @@ namespace Bear
 			//+
 			void operator+=(const Matrix<T, rows, columns>& matrix)
 			{
-				for (char i = 0; i < rows; i++)
+				for (UChar i = 0; i < rows; i++)
 				{
-					for (char j = 0; j < columns; j++)
+					for (UChar j = 0; j < columns; j++)
 						data[i][j] += matrix.data[i][j];
 				}
 			}
@@ -120,9 +120,9 @@ namespace Bear
 			//-
 			void operator-=(const Matrix<T, rows, columns>& matrix)
 			{
-				for (char i = 0; i < rows; i++)
+				for (UChar i = 0; i < rows; i++)
 				{
-					for (char j = 0; j < columns; j++)
+					for (UChar j = 0; j < columns; j++)
 						data[i][j] -= matrix.data[i][j];
 				}
 			}
@@ -168,7 +168,7 @@ namespace Bear
 				};
 			}
 		public:
-			T* operator[](const char& index)
+			T* operator[](const UChar& index)
 			{
 				return data[index];
 			}
@@ -178,8 +178,8 @@ namespace Bear
 		struct Matrix<T, 3, 3>
 		{
 		private:
-			static constexpr char rows = 3;
-			static constexpr char columns = 3;
+			static constexpr UChar rows = 3;
+			static constexpr UChar columns = 3;
 		private:
 			T data[rows][columns];
 		public:
@@ -193,9 +193,9 @@ namespace Bear
 			//+
 			void operator+=(const T& scalar)
 			{
-				for (char i = 0; i < rows; i++)
+				for (UChar i = 0; i < rows; i++)
 				{
-					for (char j = 0; j < columns; j++)
+					for (UChar j = 0; j < columns; j++)
 						data[i][j] += scalar;
 				}
 			}
@@ -210,9 +210,9 @@ namespace Bear
 			//-
 			void operator-=(const T& scalar)
 			{
-				for (char i = 0; i < rows; i++)
+				for (UChar i = 0; i < rows; i++)
 				{
-					for (char j = 0; j < columns; j++)
+					for (UChar j = 0; j < columns; j++)
 						data[i][j] -= scalar;
 				}
 			}
@@ -227,9 +227,9 @@ namespace Bear
 			//*
 			void operator*=(const T& scalar)
 			{
-				for (char i = 0; i < rows; i++)
+				for (UChar i = 0; i < rows; i++)
 				{
-					for (char j = 0; j < columns; j++)
+					for (UChar j = 0; j < columns; j++)
 						data[i][j] *= scalar;
 				}
 			}
@@ -246,9 +246,9 @@ namespace Bear
 			//+
 			void operator+=(const Matrix<T, rows, columns>& matrix)
 			{
-				for (char i = 0; i < rows; i++)
+				for (UChar i = 0; i < rows; i++)
 				{
-					for (char j = 0; j < columns; j++)
+					for (UChar j = 0; j < columns; j++)
 						data[i][j] += matrix.data[i][j];
 				}
 			}
@@ -264,9 +264,9 @@ namespace Bear
 			//-
 			void operator-=(const Matrix<T, rows, columns>& matrix)
 			{
-				for (char i = 0; i < rows; i++)
+				for (UChar i = 0; i < rows; i++)
 				{
-					for (char j = 0; j < columns; j++)
+					for (UChar j = 0; j < columns; j++)
 						data[i][j] -= matrix.data[i][j];
 				}
 			}
@@ -291,9 +291,9 @@ namespace Bear
 					data[2][0], data[2][1], data[2][2]
 				};
 
-				for (char i = 0; i < rows; i++)
+				for (UChar i = 0; i < rows; i++)
 				{
-					for (char j = 0; j < columns; j++)
+					for (UChar j = 0; j < columns; j++)
 						data[i][j] = (tmp[i][0] * matrix.data[0][j]) + (tmp[i][1] * matrix.data[1][j]) + (tmp[i][2] * matrix.data[2][j]);
 				}
 			}
@@ -317,7 +317,7 @@ namespace Bear
 				};
 			}
 		public:
-			T* operator[](const char& index)
+			T* operator[](const UChar& index)
 			{
 				return data[index];
 			}
@@ -327,8 +327,8 @@ namespace Bear
 		struct Matrix<T, 4, 4>
 		{
 		private:
-			static constexpr char rows = 4;
-			static constexpr char columns = 4;
+			static constexpr UChar rows = 4;
+			static constexpr UChar columns = 4;
 		private:
 			T data[rows][columns];
 		public:
@@ -342,9 +342,9 @@ namespace Bear
 			//+
 			void operator+=(const T& scalar)
 			{
-				for (char i = 0; i < rows; i++)
+				for (UChar i = 0; i < rows; i++)
 				{
-					for (char j = 0; j < columns; j++)
+					for (UChar j = 0; j < columns; j++)
 						data[i][j] += scalar;
 				}
 			}
@@ -359,9 +359,9 @@ namespace Bear
 			//-
 			void operator-=(const T& scalar)
 			{
-				for (char i = 0; i < rows; i++)
+				for (UChar i = 0; i < rows; i++)
 				{
-					for (char j = 0; j < columns; j++)
+					for (UChar j = 0; j < columns; j++)
 						data[i][j] -= scalar;
 				}
 			}
@@ -376,9 +376,9 @@ namespace Bear
 			//*
 			void operator*=(const T& scalar)
 			{
-				for (char i = 0; i < rows; i++)
+				for (UChar i = 0; i < rows; i++)
 				{
-					for (char j = 0; j < columns; j++)
+					for (UChar j = 0; j < columns; j++)
 						data[i][j] *= scalar;
 				}
 			}
@@ -395,9 +395,9 @@ namespace Bear
 			//+
 			void operator+=(const Matrix<T, rows, columns>& matrix)
 			{
-				for (char i = 0; i < rows; i++)
+				for (UChar i = 0; i < rows; i++)
 				{
-					for (char j = 0; j < columns; j++)
+					for (UChar j = 0; j < columns; j++)
 						data[i][j] += matrix.data[i][j];
 				}
 			}
@@ -413,9 +413,9 @@ namespace Bear
 			//-
 			void operator-=(const Matrix<T, rows, columns>& matrix)
 			{
-				for (char i = 0; i < rows; i++)
+				for (UChar i = 0; i < rows; i++)
 				{
-					for (char j = 0; j < columns; j++)
+					for (UChar j = 0; j < columns; j++)
 						data[i][j] -= matrix.data[i][j];
 				}
 			}
@@ -441,9 +441,9 @@ namespace Bear
 					data[3][0], data[3][1], data[3][2], data[3][3]
 				};
 
-				for (char i = 0; i < rows; i++)
+				for (UChar i = 0; i < rows; i++)
 				{
-					for (char j = 0; j < columns; j++)
+					for (UChar j = 0; j < columns; j++)
 						data[i][j] = (tmp[i][0] * matrix.data[0][j]) + (tmp[i][1] * matrix.data[1][j]) + (tmp[i][2] * matrix.data[2][j]) + (tmp[i][3] * matrix.data[3][j]);
 				}
 			}
@@ -576,7 +576,7 @@ namespace Bear
 				return matrix;
 			}
 		public:
-			T* operator[](const char& index)
+			T* operator[](const UChar& index)
 			{
 				return data[index];
 			}

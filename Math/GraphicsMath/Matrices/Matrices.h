@@ -502,8 +502,9 @@ namespace Bear
 			//Rotation			
 			static Matrix<T, rows, columns> RotateX(const T& angle)
 			{
-				const T sin = ::sin(angle);
-				const T cos = ::cos(angle);
+				const double radians = angle * 0.0174532925;
+				const T sin = ::sin(radians);
+				const T cos = ::cos(radians);
 
 				Matrix<T, columns, rows> matrix;
 				matrix.data[1][1] = cos;
@@ -517,8 +518,9 @@ namespace Bear
 
 			static Matrix<T, rows, columns> RotateY(const T& angle)
 			{
-				const T sin = ::sin(angle);
-				const T cos = ::cos(angle);
+				const double radians = angle * 0.0174532925;
+				const T sin = ::sin(radians);
+				const T cos = ::cos(radians);
 
 				Matrix<T, columns, rows> matrix;
 				matrix.data[0][0] = cos;
@@ -532,8 +534,9 @@ namespace Bear
 
 			static Matrix<T, rows, columns> RotateZ(const T& angle)
 			{
-				const T sin = ::sin(angle);
-				const T cos = ::cos(angle);
+				const double radians = angle * 0.0174532925;
+				const T sin = ::sin(radians);
+				const T cos = ::cos(radians);
 
 				Matrix<T, columns, rows> matrix;
 				matrix.data[0][0] = cos;

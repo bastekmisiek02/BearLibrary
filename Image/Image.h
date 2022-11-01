@@ -6,11 +6,10 @@
 
 namespace Bear
 {
-	class Image
+	namespace Image
 	{
-	public:
 		using Color = GraphicsMath::Vec<UChar, 4>;
-	public:
+
 		struct ImageInfo
 		{
 			UInt width;
@@ -21,16 +20,20 @@ namespace Bear
 			UInt filterMethod;
 			UInt interfaceMethod;
 		};
-	private:
-		ImageInfo imageInfo;
-		Color* data;
-	public:
-		Image(const char* path);
-		~Image();
-	public:
-		Color* GetData() const;
-		ImageInfo GetImageInfo() const;
-	public:
-		void SaveToFile(const char* path);
-	};
+
+		class Image
+		{
+		private:
+			ImageInfo imageInfo;
+			Color* data;
+		public:
+			Image(const char* path);
+			~Image();
+		public:
+			Color* GetData() const;
+			ImageInfo GetImageInfo() const;
+		public:
+			void SaveToFile(const char* path);
+		};
+	}
 }

@@ -471,7 +471,7 @@ namespace Bear
 			//Translate
 			static Matrix<T, rows, columns> Translate(const Vec<T, 2>& vector)
 			{
-				Matrix<T, columns, rows> matrix;
+				Matrix<T, rows, columns> matrix;
 				matrix.data[0][3] = vector.x;
 				matrix.data[1][3] = vector.y;
 				matrix.data[2][3] = 0;
@@ -481,7 +481,7 @@ namespace Bear
 			
 			static Matrix<T, rows, columns> Translate(const Vec<T, 3>& vector)
 			{
-				Matrix<T, columns, rows> matrix;
+				Matrix<T, rows, columns> matrix;
 				matrix.data[0][3] = vector.x;
 				matrix.data[1][3] = vector.y;
 				matrix.data[2][3] = vector.z;
@@ -491,10 +491,10 @@ namespace Bear
 			
 			static Matrix<T, rows, columns> Translate(const Vec<T, 4>& vector)
 			{
-				Matrix<T, columns, rows> matrix;
-				matrix.data[0][0] = vector.x;
-				matrix.data[1][1] = vector.y;
-				matrix.data[2][2] = vector.z;
+				Matrix<T, rows, columns> matrix;
+				matrix.data[0][3] = vector.x;
+				matrix.data[1][3] = vector.y;
+				matrix.data[2][3] = vector.z;
 			
 				return matrix;
 			}
@@ -506,7 +506,7 @@ namespace Bear
 				const T sin = ::sin(radians);
 				const T cos = ::cos(radians);
 
-				Matrix<T, columns, rows> matrix;
+				Matrix<T, rows, columns> matrix;
 				matrix.data[1][1] = cos;
 				matrix.data[1][2] = -sin;
 
@@ -522,7 +522,7 @@ namespace Bear
 				const T sin = ::sin(radians);
 				const T cos = ::cos(radians);
 
-				Matrix<T, columns, rows> matrix;
+				Matrix<T, rows, columns> matrix;
 				matrix.data[0][0] = cos;
 				matrix.data[0][2] = sin;
 
@@ -538,7 +538,7 @@ namespace Bear
 				const T sin = ::sin(radians);
 				const T cos = ::cos(radians);
 
-				Matrix<T, columns, rows> matrix;
+				Matrix<T, rows, columns> matrix;
 				matrix.data[0][0] = cos;
 				matrix.data[0][1] = -sin;
 
@@ -551,7 +551,7 @@ namespace Bear
 			//Scale
 			static Matrix<T, rows, columns> Scale(const Vec<T, 2>& vector)
 			{
-				Matrix<T, columns, rows> matrix;
+				Matrix<T, rows, columns> matrix;
 				matrix.data[0][0] = vector.x;
 				matrix.data[1][1] = vector.y;
 
@@ -560,7 +560,7 @@ namespace Bear
 
 			static Matrix<T, rows, columns> Scale(const Vec<T, 3>& vector)
 			{
-				Matrix<T, columns, rows> matrix;
+				Matrix<T, rows, columns> matrix;
 				matrix.data[0][0] = vector.x;
 				matrix.data[1][1] = vector.y;
 				matrix.data[2][2] = vector.z;
@@ -570,11 +570,40 @@ namespace Bear
 
 			static Matrix<T, rows, columns> Scale(const Vec<T, 4>& vector)
 			{
-				Matrix<T, columns, rows> matrix;
+				Matrix<T, rows, columns> matrix;
 				matrix.data[0][0] = vector.x;
 				matrix.data[1][1] = vector.y;
 				matrix.data[2][2] = vector.z;
 				matrix.data[3][3] = vector.w;
+
+				return matrix;
+			}
+
+			static Matrix<T, 4, 4> Ortho(const T& left, const T& right, const T& bottom, const T& top, const T& near, const T& far)
+			{
+				Matrix<T, 4, 4> matrix;
+
+				matrix.data[0][0] = (T)2 / (right - left);
+				matrix.data[1][1] = (T)2 / (top - bottom);
+				matrix.data[2][2] = (T)-2 / (far - near);
+
+				matrix.data[0][3] = -(right + left) / (right - left);
+				matrix.data[1][3] = -(top + bottom) / (top - bottom);
+				matrix.data[2][3] = -(far + near) / (far - near);
+
+				return matrix;
+			}
+
+			static Matrix<T, 4, 4> Perspective(const T& fov, const T& aspect, const T& near, const T& far)
+			{
+				const T halfFovTan = ::tan(fov / (T)2);
+
+				Matrix<T, 4, 4> matrix = Scale({ (T)0, (T)0, (T)0, (T)0 });
+				matrix[0][0] = (T)1 / (aspect * halfFovTan);
+				matrix[1][1] = (T)1 / halfFovTan;
+				matrix[2][2] = far / (far - near);
+				matrix[3][2] = 1;
+				matrix[2][3] = -(far * near) / (far - near);
 
 				return matrix;
 			}

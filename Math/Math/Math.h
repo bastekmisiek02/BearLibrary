@@ -47,16 +47,16 @@ namespace Bear
 
 			return value;
 		}
-
+		
 		constexpr double Sqrt(const double& value)
 		{
-			double x = value / 2;
+			double x = value * 0.5;
 			
 			double quotient = value / x;
 
 			while (Abs<double>(x - quotient) > 0.000001)
 			{
-				x = (x + quotient) / 2;
+				x = 0.5 * (x + quotient);
 
 				if (x * x == value)
 					break;

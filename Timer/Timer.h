@@ -4,14 +4,8 @@
 
 namespace Bear
 {
-	class Timer
+	namespace Timer
 	{
-	private:
-		void* start;
-
-		bool* stop;
-		void* thread;
-	public:
 		enum class Duration
 		{
 			Nanoseconds,
@@ -21,17 +15,26 @@ namespace Bear
 			Minutes,
 			Hours
 		};
-	public:
-		Timer();
-		Timer(const Timer& timer) = delete;
-		Timer(const Timer&& timer) = delete;
-		Timer(const ULInt& time, void(*callback)(), const Duration& duration = Duration::Milliseconds);
-		~Timer();
-	public:
-		void Reset();
-	public:
-		void Stop() const;
 
-		ULInt GetTime(const Duration& duration = Duration::Milliseconds) const;
-	};
+		class Timer
+		{
+		private:
+			void* start;
+
+			bool* stop;
+			void* thread;
+		public:
+			Timer();
+			Timer(const Timer& timer) = delete;
+			Timer(const Timer&& timer) = delete;
+			Timer(const ULInt& time, void(*callback)(), const Duration& duration = Duration::Milliseconds);
+			~Timer();
+		public:
+			void Reset();
+		public:
+			void Stop() const;
+
+			ULInt GetTime(const Duration& duration = Duration::Milliseconds) const;
+		};
+	}
 }

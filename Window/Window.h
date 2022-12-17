@@ -6,15 +6,8 @@
 
 namespace Bear
 {
-	class Window
+	namespace Window
 	{
-	private:
-		void* handle;
-		void* instance;
-		const char* nameClass;
-
-		const char* title;
-	public:
 		enum class KeyCode : char
 		{
 			Escape = 7,
@@ -163,81 +156,91 @@ namespace Bear
 			Hide = 0,
 			Visible = 1
 		};
-	private:
-		static LInt WinProc(void* instance, UInt msg, ULInt wParam, LInt lParam);
-	private:
-		Style style;
-		bool destroyed;
-	public:
-		using Vector = GraphicsMath::IVec2;
-	private:
-		Vector minSize;
-		Vector maxSize;
-	public:
-		Window(const Window& window) = delete;
-		Window(const Window&& window) = delete;
 
-		Window(const Vector& size, const Vector& position, const char* title, const PointerType& pointerType = PointerType::Arrow, const Window* parent = nullptr, const char* className = nullptr, const char* pathToTaskBarImage = nullptr, const char* pathToImage = nullptr, const State& windowState = State::Restored, const Style& windowStyle = Style::Normal);
-		Window(const Vector& size, const Vector& position, const char* title, const char* pointerFileName = nullptr, const Window* parent = nullptr, const char* className = nullptr, const char* pathToTaskBarImage = nullptr, const char* pathToImage = nullptr, const State& windowState = State::Restored, const Style& windowStyle = Style::Normal);
-		~Window();
-	public:
-		typedef void(*OnMouseMove)(const Window* window, const Vector mousePosition);
-		typedef void(*OnMouseClick)(const Window* window, const MouseButton mouseButton, const Vector mousePosition, const bool controlClicked, const bool shiftClicked);
-		typedef void(*OnMouseScroll)(const Window* window, const bool offset);
-		typedef void(*OnKeyClick)(const Window* window, const KeyCode key);
-		typedef void(*OnMove)(const Window* window, const Vector position);
-		typedef void(*OnResize)(const Window* window, const Vector size, const State state);
-		typedef void(*OnClose)(const Window* window);
-		typedef void(*OnDestroy)(const Window* window);
-	public:
-		OnMouseMove OnMouseMoveCallback;
-		OnMouseClick OnMouseClickCallback;
-		OnMouseScroll OnMouseScrollCallback;
-		OnKeyClick OnKeyClickCallback;
-		OnMove OnMoveCallback;
-		OnResize OnResizeCallback;
-		OnClose OnCloseCallback;
-		OnDestroy OnDestroyCallback;
-	public:
-		void* GetHandle() const;
-		void* GetInstance() const;
+		class Window
+		{
+		private:
+			void* handle;
+			void* instance;
+			const char* nameClass;
 
-		const char* GetTitle() const;
-		void SetTitle(const char* newTitle);
+			const char* title;
+		private:
+			static LInt WinProc(void* instance, UInt msg, ULInt wParam, LInt lParam);
+		private:
+			Style style;
+			bool destroyed;
+		public:
+			using Vector = GraphicsMath::IVec2;
+		private:
+			Vector minSize;
+			Vector maxSize;
+		public:
+			Window(const Window& window) = delete;
+			Window(const Window&& window) = delete;
 
-		Vector GetSize() const;
-		void SetSize(const Vector& newSize);
+			Window(const Vector& size, const Vector& position, const char* title, const PointerType& pointerType = PointerType::Arrow, const Window* parent = nullptr, const char* className = nullptr, const char* pathToTaskBarImage = nullptr, const char* pathToImage = nullptr, const State& windowState = State::Restored, const Style& windowStyle = Style::Normal);
+			Window(const Vector& size, const Vector& position, const char* title, const char* pointerFileName = nullptr, const Window* parent = nullptr, const char* className = nullptr, const char* pathToTaskBarImage = nullptr, const char* pathToImage = nullptr, const State& windowState = State::Restored, const Style& windowStyle = Style::Normal);
+			~Window();
+		public:
+			typedef void(*OnMouseMove)(const Window* window, const Vector mousePosition);
+			typedef void(*OnMouseClick)(const Window* window, const MouseButton mouseButton, const Vector mousePosition, const bool controlClicked, const bool shiftClicked);
+			typedef void(*OnMouseScroll)(const Window* window, const bool offset);
+			typedef void(*OnKeyClick)(const Window* window, const KeyCode key);
+			typedef void(*OnMove)(const Window* window, const Vector position);
+			typedef void(*OnResize)(const Window* window, const Vector size, const State state);
+			typedef void(*OnClose)(const Window* window);
+			typedef void(*OnDestroy)(const Window* window);
+		public:
+			OnMouseMove OnMouseMoveCallback;
+			OnMouseClick OnMouseClickCallback;
+			OnMouseScroll OnMouseScrollCallback;
+			OnKeyClick OnKeyClickCallback;
+			OnMove OnMoveCallback;
+			OnResize OnResizeCallback;
+			OnClose OnCloseCallback;
+			OnDestroy OnDestroyCallback;
+		public:
+			void* GetHandle() const;
+			void* GetInstance() const;
 
-		Vector GetPosition() const;
-		void SetPosition(const Vector& newPosition);
+			const char* GetTitle() const;
+			void SetTitle(const char* newTitle);
 
-		State GetState() const;
-		void SetState(const State& newState);
-	public:
-		Vector GetMinSize() const;
-		void SetMinSize(const Vector& size);
+			Vector GetSize() const;
+			void SetSize(const Vector& newSize);
 
-		Vector GetMaxSize() const;
-		void SetMaxSize(const Vector& size);
-	public:
-		void SetCursor(const PointerType& type);
-		void SetCursor(const char* pointerFileName);
-	public:
-		void SetMousePosition(const Vector& newPosition);
-		Vector GetMousePosition() const;
+			Vector GetPosition() const;
+			void SetPosition(const Vector& newPosition);
 
-		const bool IsKeyDown(const char& key) const;
+			State GetState() const;
+			void SetState(const State& newState);
+		public:
+			Vector GetMinSize() const;
+			void SetMinSize(const Vector& size);
 
-		void LockMousePosition(const Vector& position, const Vector& size) const;
-	public:
-		void HideCursor() const;
-		void ShowCursor() const;
-	public:
-		bool IsDestroyed() const;
-	public:
-		void PeekEvents() const;
-		void WaitEvents() const;
-	public:
-		static const Vector GetMonitorResolution();
-	};
+			Vector GetMaxSize() const;
+			void SetMaxSize(const Vector& size);
+		public:
+			void SetCursor(const PointerType& type);
+			void SetCursor(const char* pointerFileName);
+		public:
+			void SetMousePosition(const Vector& newPosition);
+			Vector GetMousePosition() const;
+
+			const bool IsKeyDown(const char& key) const;
+
+			void LockMousePosition(const Vector& position, const Vector& size) const;
+		public:
+			void HideCursor() const;
+			void ShowCursor() const;
+		public:
+			bool IsDestroyed() const;
+		public:
+			void PeekEvents() const;
+			void WaitEvents() const;
+		public:
+			static const Vector GetMonitorResolution();
+		};
+	}
 }

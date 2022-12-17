@@ -6,25 +6,27 @@
 
 namespace Bear
 {
-	static Collections::DynamicArray<Window*> windows;
-
-	Window* SearchWindow(const HWND& instance)
+	namespace Window
 	{
-		for (ULInt i = 0; i < windows.Length(); i++)
+		static Collections::DynamicArray<Window*> windows;
+
+		Window* SearchWindow(const HWND& instance)
 		{
-			if (instance == windows[i]->GetHandle())
-				return windows[i];
+			for (ULInt i = 0; i < windows.Length(); i++)
+			{
+				if (instance == windows[i]->GetHandle())
+					return windows[i];
+			}
+
+			return nullptr;
 		}
 
-		return nullptr;
-	}
-
-	LInt Window::WinProc(void* instance, UInt msg, ULInt wParam, LInt lParam)
-	{
-		HWND attachment = (HWND)instance;
-
-		switch (msg)
+		LInt Window::WinProc(void* instance, UInt msg, ULInt wParam, LInt lParam)
 		{
+			HWND attachment = (HWND)instance;
+
+			switch (msg)
+			{
 			case WM_MOUSEMOVE:
 			{
 				if (Window* window = SearchWindow(attachment))
@@ -43,7 +45,7 @@ namespace Bear
 				if (Window* window = SearchWindow(attachment))
 				{
 					if (window->OnMouseClickCallback)
-						window->OnMouseClickCallback(window, (Window::MouseButton)wParam, { LOWORD(lParam), HIWORD(lParam) }, wParam & MK_CONTROL, wParam & MK_SHIFT);
+						window->OnMouseClickCallback(window, (MouseButton)wParam, { LOWORD(lParam), HIWORD(lParam) }, wParam & MK_CONTROL, wParam & MK_SHIFT);
 				}
 
 				break;
@@ -63,7 +65,7 @@ namespace Bear
 				if (Window* window = SearchWindow(attachment))
 				{
 					if (window->OnKeyClickCallback)
-						window->OnKeyClickCallback(window, (Window::KeyCode)wParam);
+						window->OnKeyClickCallback(window, (KeyCode)wParam);
 				}
 
 				break;
@@ -108,27 +110,27 @@ namespace Bear
 				{
 					if (window->OnResizeCallback)
 					{
-						Window::State state = Window::State::Restored;
+						State state = State::Restored;
 
 						switch (wParam)
 						{
-						case SIZE_RESTORED:
-						{
-							state = Window::State::Restored;
-							break;
-						}
-						case SIZE_MINIMIZED:
-						{
-							state = Window::State::Minimized;
-							break;
-						}
-						case SIZE_MAXIMIZED:
-						{
-							state = Window::State::Maximized;
-							break;
-						}
-						default:
-							break;
+							case SIZE_RESTORED:
+							{
+								state = State::Restored;
+								break;
+							}
+							case SIZE_MINIMIZED:
+							{
+								state = State::Minimized;
+								break;
+							}
+							case SIZE_MAXIMIZED:
+							{
+								state = State::Maximized;
+								break;
+							}
+							default:
+								break;
 						}
 
 						window->OnResizeCallback(window, { LOWORD(lParam), HIWORD(lParam) }, state);
@@ -184,299 +186,300 @@ namespace Bear
 			}
 			default:
 				return DefWindowProcA(attachment, msg, wParam, lParam);
+			}
+
+			return 0;
 		}
 
-		return 0;
-	}
-
-	Window::Window(const Vector& size, const Vector& position, const char* title, const PointerType& pointerType, const Window* parent, const char* className, const char* pathToTaskBarImage, const char* pathToImage, const State& windowState, const Style& windowStyle)
-		: style(windowStyle), destroyed(false), OnCloseCallback(nullptr), OnDestroyCallback(nullptr), OnKeyClickCallback(nullptr), OnMouseClickCallback(nullptr), OnMouseMoveCallback(nullptr), OnMouseScrollCallback(nullptr), OnMoveCallback(nullptr), OnResizeCallback(nullptr), minSize(), maxSize()
-	{
-		nameClass = !className ? title : className;
-
-		WNDCLASSEXA wc{};
-		wc.cbClsExtra = 0;
-		wc.cbSize = sizeof(WNDCLASSEX);
-		wc.cbWndExtra = 0;
-		wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
-		wc.hCursor = LoadCursor(nullptr, MAKEINTRESOURCE(pointerType));
-		wc.hIcon = pathToTaskBarImage ? (HICON)LoadImageA(nullptr, pathToTaskBarImage, IMAGE_ICON, 0, 0, LR_LOADFROMFILE | LR_DEFAULTSIZE | LR_SHARED) : LoadIcon(nullptr, IDI_APPLICATION);
-		wc.hIconSm = pathToImage ? (HICON)LoadImageA(nullptr, pathToImage, IMAGE_ICON, 0, 0, LR_LOADFROMFILE | LR_DEFAULTSIZE | LR_SHARED) : LoadIcon(nullptr, IDI_APPLICATION);
-		wc.hInstance = nullptr;
-		wc.lpfnWndProc = (WNDPROC)WinProc;
-		wc.lpszClassName = nameClass;
-		wc.lpszMenuName = nullptr;
-		wc.style = 0;
-
-		if (!RegisterClassExA(&wc))
-			return;
-
-		this->handle = CreateWindowExA(0, nameClass, title, (DWORD)windowStyle, position.x, position.y, size.x, size.y, nullptr, nullptr, nullptr, nullptr);
-
-		if (!this->handle)
-			return;
-
-		this->SetState(windowState);
-		UpdateWindow((HWND)this->handle);
-
-		windows.Add(this);
-
-		if (parent)
-			SetParent((HWND)this->handle, (HWND)parent->handle);
-
-		this->title = title;
-
-		instance = (HINSTANCE)GetModuleHandleA(nullptr);
-	}
-
-	Window::Window(const Vector& size, const Vector& position, const char* title, const char* pointerFileName, const Window* parent, const char* className, const char* pathToTaskBarImage, const char* pathToImage, const State& windowState, const Style& windowStyle)
-		: style(windowStyle), destroyed(false), OnMouseMoveCallback(nullptr), OnMouseClickCallback(nullptr), OnMouseScrollCallback(nullptr), OnKeyClickCallback(nullptr), OnMoveCallback(nullptr), OnResizeCallback(nullptr), OnCloseCallback(nullptr), OnDestroyCallback(nullptr), minSize(), maxSize()
-	{
-		nameClass = !className ? title : className;
-
-		WNDCLASSEXA wc{};
-		wc.cbClsExtra = 0;
-		wc.cbSize = sizeof(WNDCLASSEXA);
-		wc.cbWndExtra = 0;
-		wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
-		wc.hCursor = (HCURSOR)LoadCursorFromFileA(nullptr);
-		wc.hIcon = pathToTaskBarImage ? (HICON)LoadImageA(nullptr, pathToTaskBarImage, IMAGE_ICON, 0, 0, LR_LOADFROMFILE | LR_DEFAULTSIZE | LR_SHARED) : LoadIcon(nullptr, IDI_APPLICATION);
-		wc.hIconSm = pathToImage ? (HICON)LoadImageA(nullptr, pathToImage, IMAGE_ICON, 0, 0, LR_LOADFROMFILE | LR_DEFAULTSIZE | LR_SHARED) : LoadIcon(nullptr, IDI_APPLICATION);
-		wc.hInstance = nullptr;
-		wc.lpfnWndProc = (WNDPROC)WinProc;
-		wc.lpszClassName = nameClass;
-		wc.lpszMenuName = nullptr;
-		wc.style = 0;
-
-		if (!RegisterClassExA(&wc))
-			return;
-
-		this->handle = CreateWindowExA(0, nameClass, title, (DWORD)windowStyle, position.x, position.y, size.x, size.y, nullptr, nullptr, nullptr, nullptr);
-
-		if (!this->handle)
-			return;
-
-		this->SetState(windowState);
-		UpdateWindow((HWND)this->handle);
-
-		windows.Add(this);
-
-		if (parent)
-			SetParent((HWND)this->handle, (HWND)parent->handle);
-
-		this->title = title;
-
-		instance = (HINSTANCE)GetModuleHandleA(nullptr);
-	}
-
-	Window::~Window()
-	{
-		destroyed = true;
-
-		windows.Remove(this);
-	}
-
-	void* Window::GetHandle() const
-	{
-		return handle;
-	}
-
-	void* Window::GetInstance() const
-	{
-		return instance;
-	}
-
-	const char* Window::GetTitle() const
-	{
-		return title;
-	}
-
-	void Window::SetTitle(const char* newTitle)
-	{
-		SetWindowTextA((HWND)handle, newTitle);
-		title = newTitle;
-	}
-
-	Window::Vector Window::GetSize() const
-	{
-		RECT point;
-		GetClientRect((HWND)handle, &point);
-
-		return { point.right, point.bottom };
-	}
-
-	void Window::SetSize(const Vector& newSize)
-	{
-		SetWindowPos((HWND)handle, nullptr, 0, 0, newSize.x, newSize.y, SWP_NOMOVE);
-	}
-
-	Window::Vector Window::GetPosition() const
-	{
-		RECT point;
-		GetWindowRect((HWND)handle, &point);
-
-		return { point.left + 8, point.top + 31 };
-	}
-
-	void Window::SetPosition(const Vector& newPosition)
-	{
-		SetWindowPos((HWND)handle, nullptr, newPosition.x, newPosition.y, 0, 0, SWP_NOSIZE);
-	}
-
-	Window::State Window::GetState() const
-	{
-		WINDOWPLACEMENT windowState{};
-		windowState.length = sizeof(WINDOWPLACEMENT);
-
-		GetWindowPlacement((HWND)this->handle, &windowState);
-
-		return (Window::State)windowState.showCmd;
-	}
-
-	void Window::SetState(const State& newState)
-	{
-		if (newState == State::FullScreen)
+		Window::Window(const Vector& size, const Vector& position, const char* title, const PointerType& pointerType, const Window* parent, const char* className, const char* pathToTaskBarImage, const char* pathToImage, const State& windowState, const Style& windowStyle)
+			: style(windowStyle), destroyed(false), OnCloseCallback(nullptr), OnDestroyCallback(nullptr), OnKeyClickCallback(nullptr), OnMouseClickCallback(nullptr), OnMouseMoveCallback(nullptr), OnMouseScrollCallback(nullptr), OnMoveCallback(nullptr), OnResizeCallback(nullptr), minSize(), maxSize()
 		{
-			SetWindowLongA((HWND)handle, GWL_STYLE, WS_VISIBLE);
-			ShowWindow((HWND)this->handle, (int)State::Maximized);
+			nameClass = !className ? title : className;
+
+			WNDCLASSEXA wc{};
+			wc.cbClsExtra = 0;
+			wc.cbSize = sizeof(WNDCLASSEX);
+			wc.cbWndExtra = 0;
+			wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
+			wc.hCursor = LoadCursor(nullptr, MAKEINTRESOURCE(pointerType));
+			wc.hIcon = pathToTaskBarImage ? (HICON)LoadImageA(nullptr, pathToTaskBarImage, IMAGE_ICON, 0, 0, LR_LOADFROMFILE | LR_DEFAULTSIZE | LR_SHARED) : LoadIcon(nullptr, IDI_APPLICATION);
+			wc.hIconSm = pathToImage ? (HICON)LoadImageA(nullptr, pathToImage, IMAGE_ICON, 0, 0, LR_LOADFROMFILE | LR_DEFAULTSIZE | LR_SHARED) : LoadIcon(nullptr, IDI_APPLICATION);
+			wc.hInstance = nullptr;
+			wc.lpfnWndProc = (WNDPROC)WinProc;
+			wc.lpszClassName = nameClass;
+			wc.lpszMenuName = nullptr;
+			wc.style = 0;
+
+			if (!RegisterClassExA(&wc))
+				return;
+
+			this->handle = CreateWindowExA(0, nameClass, title, (DWORD)windowStyle, position.x, position.y, size.x, size.y, nullptr, nullptr, nullptr, nullptr);
+
+			if (!this->handle)
+				return;
+
+			this->SetState(windowState);
+			UpdateWindow((HWND)this->handle);
+
+			windows.Add(this);
+
+			if (parent)
+				SetParent((HWND)this->handle, (HWND)parent->handle);
+
+			this->title = title;
+
+			instance = (HINSTANCE)GetModuleHandleA(nullptr);
 		}
-		else
+
+		Window::Window(const Vector& size, const Vector& position, const char* title, const char* pointerFileName, const Window* parent, const char* className, const char* pathToTaskBarImage, const char* pathToImage, const State& windowState, const Style& windowStyle)
+			: style(windowStyle), destroyed(false), OnMouseMoveCallback(nullptr), OnMouseClickCallback(nullptr), OnMouseScrollCallback(nullptr), OnKeyClickCallback(nullptr), OnMoveCallback(nullptr), OnResizeCallback(nullptr), OnCloseCallback(nullptr), OnDestroyCallback(nullptr), minSize(), maxSize()
 		{
-			SetWindowLongA((HWND)handle, GWL_STYLE, (LONG)style);
-			ShowWindow((HWND)this->handle, (int)newState);
+			nameClass = !className ? title : className;
+
+			WNDCLASSEXA wc{};
+			wc.cbClsExtra = 0;
+			wc.cbSize = sizeof(WNDCLASSEXA);
+			wc.cbWndExtra = 0;
+			wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
+			wc.hCursor = (HCURSOR)LoadCursorFromFileA(nullptr);
+			wc.hIcon = pathToTaskBarImage ? (HICON)LoadImageA(nullptr, pathToTaskBarImage, IMAGE_ICON, 0, 0, LR_LOADFROMFILE | LR_DEFAULTSIZE | LR_SHARED) : LoadIcon(nullptr, IDI_APPLICATION);
+			wc.hIconSm = pathToImage ? (HICON)LoadImageA(nullptr, pathToImage, IMAGE_ICON, 0, 0, LR_LOADFROMFILE | LR_DEFAULTSIZE | LR_SHARED) : LoadIcon(nullptr, IDI_APPLICATION);
+			wc.hInstance = nullptr;
+			wc.lpfnWndProc = (WNDPROC)WinProc;
+			wc.lpszClassName = nameClass;
+			wc.lpszMenuName = nullptr;
+			wc.style = 0;
+
+			if (!RegisterClassExA(&wc))
+				return;
+
+			this->handle = CreateWindowExA(0, nameClass, title, (DWORD)windowStyle, position.x, position.y, size.x, size.y, nullptr, nullptr, nullptr, nullptr);
+
+			if (!this->handle)
+				return;
+
+			this->SetState(windowState);
+			UpdateWindow((HWND)this->handle);
+
+			windows.Add(this);
+
+			if (parent)
+				SetParent((HWND)this->handle, (HWND)parent->handle);
+
+			this->title = title;
+
+			instance = (HINSTANCE)GetModuleHandleA(nullptr);
 		}
-	}
 
-	Window::Vector Window::GetMinSize() const
-	{
-		return minSize;
-	}
-
-	void Window::SetMinSize(const Vector& size)
-	{
-		this->minSize = size;
-	}
-
-	Window::Vector Window::GetMaxSize() const
-	{
-		return maxSize;
-	}
-
-	void Window::SetMaxSize(const Vector& size)
-	{
-		this->maxSize = size;
-	}
-
-	void Window::SetCursor(const PointerType& type)
-	{
-		::SetCursor(LoadCursorA(nullptr, MAKEINTRESOURCEA(type)));
-	}
-
-	void Window::SetCursor(const char* pointerFileName)
-	{
-		::SetCursor(LoadCursorFromFileA(pointerFileName));
-	}
-
-	void Window::SetMousePosition(const Vector& newPosition)
-	{
-		if (GetActiveWindow() == handle)
+		Window::~Window()
 		{
-			const Vector&& position = GetPosition();
+			destroyed = true;
 
-			SetPhysicalCursorPos(position.x + newPosition.x, position.y + newPosition.y);
+			windows.Remove(this);
 		}
-	}
 
-	Window::Vector Window::GetMousePosition() const
-	{
-		POINT point;
-		GetPhysicalCursorPos(&point);
-
-		int x = point.x - this->GetPosition().x;
-		int y = point.y - this->GetPosition().y;
-
-		if (x < 0 || (y < 0))
+		void* Window::GetHandle() const
 		{
-			x = -1;
-			y = -1;
+			return handle;
 		}
 
-		const Vector&& size = this->GetSize();
-
-		if (x >= size.x || y >= size.y)
+		void* Window::GetInstance() const
 		{
-			x = -1;
-			y = -1;
+			return instance;
 		}
 
-		return { x, y };
-	}
-
-	bool Window::IsDestroyed() const
-	{
-		return destroyed;
-	}
-
-	void Window::PeekEvents() const
-	{
-		MSG msg{};
-
-		while (PeekMessageA(&msg, nullptr, 0, 0, PM_REMOVE))
+		const char* Window::GetTitle() const
 		{
-			TranslateMessage(&msg);
-			DispatchMessageA(&msg);
+			return title;
 		}
-	}
 
-	void Window::WaitEvents() const
-	{
-		WaitMessage();
-
-		MSG msg{};
-
-		while (PeekMessageA(&msg, nullptr, 0, 0, PM_REMOVE))
+		void Window::SetTitle(const char* newTitle)
 		{
-			TranslateMessage(&msg);
-			DispatchMessageA(&msg);
+			SetWindowTextA((HWND)handle, newTitle);
+			title = newTitle;
 		}
-	}
 
-	const Window::Vector Window::GetMonitorResolution()
-	{
-		return { GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN) };
-	}
+		Window::Vector Window::GetSize() const
+		{
+			RECT point;
+			GetClientRect((HWND)handle, &point);
 
-	const bool Window::IsKeyDown(const char& key) const
-	{
-		if (GetActiveWindow() == handle)
-			return GetAsyncKeyState(key);
+			return { point.right, point.bottom };
+		}
 
-		return false;
-	}
+		void Window::SetSize(const Vector& newSize)
+		{
+			SetWindowPos((HWND)handle, nullptr, 0, 0, newSize.x, newSize.y, SWP_NOMOVE);
+		}
 
-	void Window::LockMousePosition(const Vector& position, const Vector& size) const
-	{
-		const Vector& windowPosition = GetPosition();
-		const Vector& windowSize = GetSize();
+		Window::Vector Window::GetPosition() const
+		{
+			RECT point;
+			GetWindowRect((HWND)handle, &point);
 
-		RECT rect{ position.x + windowPosition.x, position.y + windowPosition.y, position.x + windowPosition.x + size.x, position.y + windowPosition.y + size.y };
+			return { point.left + 8, point.top + 31 };
+		}
 
-		if (rect.right > windowPosition.x + windowSize.x)
-			rect.right = windowPosition.x + windowSize.x;
+		void Window::SetPosition(const Vector& newPosition)
+		{
+			SetWindowPos((HWND)handle, nullptr, newPosition.x, newPosition.y, 0, 0, SWP_NOSIZE);
+		}
 
-		if (rect.bottom > windowPosition.y + windowSize.y)
-			rect.bottom = windowPosition.y + windowSize.y;
+		State Window::GetState() const
+		{
+			WINDOWPLACEMENT windowState{};
+			windowState.length = sizeof(WINDOWPLACEMENT);
 
-		ClipCursor(&rect);
-	}
+			GetWindowPlacement((HWND)this->handle, &windowState);
 
-	void Window::HideCursor() const
-	{
-		::ShowCursor(false);
-	}
+			return (State)windowState.showCmd;
+		}
 
-	void Window::ShowCursor() const
-	{
-		::ShowCursor(true);
+		void Window::SetState(const State& newState)
+		{
+			if (newState == State::FullScreen)
+			{
+				SetWindowLongA((HWND)handle, GWL_STYLE, WS_VISIBLE);
+				ShowWindow((HWND)this->handle, (int)State::Maximized);
+			}
+			else
+			{
+				SetWindowLongA((HWND)handle, GWL_STYLE, (LONG)style);
+				ShowWindow((HWND)this->handle, (int)newState);
+			}
+		}
+
+		Window::Vector Window::GetMinSize() const
+		{
+			return minSize;
+		}
+
+		void Window::SetMinSize(const Vector& size)
+		{
+			this->minSize = size;
+		}
+
+		Window::Vector Window::GetMaxSize() const
+		{
+			return maxSize;
+		}
+
+		void Window::SetMaxSize(const Vector& size)
+		{
+			this->maxSize = size;
+		}
+
+		void Window::SetCursor(const PointerType& type)
+		{
+			::SetCursor(LoadCursorA(nullptr, MAKEINTRESOURCEA(type)));
+		}
+
+		void Window::SetCursor(const char* pointerFileName)
+		{
+			::SetCursor(LoadCursorFromFileA(pointerFileName));
+		}
+
+		void Window::SetMousePosition(const Vector& newPosition)
+		{
+			if (GetActiveWindow() == handle)
+			{
+				const Vector&& position = GetPosition();
+
+				SetPhysicalCursorPos(position.x + newPosition.x, position.y + newPosition.y);
+			}
+		}
+
+		Window::Vector Window::GetMousePosition() const
+		{
+			POINT point;
+			GetPhysicalCursorPos(&point);
+
+			int x = point.x - this->GetPosition().x;
+			int y = point.y - this->GetPosition().y;
+
+			if (x < 0 || (y < 0))
+			{
+				x = -1;
+				y = -1;
+			}
+
+			const Vector&& size = this->GetSize();
+
+			if (x >= size.x || y >= size.y)
+			{
+				x = -1;
+				y = -1;
+			}
+
+			return { x, y };
+		}
+
+		bool Window::IsDestroyed() const
+		{
+			return destroyed;
+		}
+
+		void Window::PeekEvents() const
+		{
+			MSG msg{};
+
+			while (PeekMessageA(&msg, nullptr, 0, 0, PM_REMOVE))
+			{
+				TranslateMessage(&msg);
+				DispatchMessageA(&msg);
+			}
+		}
+
+		void Window::WaitEvents() const
+		{
+			WaitMessage();
+
+			MSG msg{};
+
+			while (PeekMessageA(&msg, nullptr, 0, 0, PM_REMOVE))
+			{
+				TranslateMessage(&msg);
+				DispatchMessageA(&msg);
+			}
+		}
+
+		const Window::Vector Window::GetMonitorResolution()
+		{
+			return { GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN) };
+		}
+
+		const bool Window::IsKeyDown(const char& key) const
+		{
+			if (GetActiveWindow() == handle)
+				return GetAsyncKeyState(key);
+
+			return false;
+		}
+
+		void Window::LockMousePosition(const Vector& position, const Vector& size) const
+		{
+			const Vector& windowPosition = GetPosition();
+			const Vector& windowSize = GetSize();
+
+			RECT rect{ position.x + windowPosition.x, position.y + windowPosition.y, position.x + windowPosition.x + size.x, position.y + windowPosition.y + size.y };
+
+			if (rect.right > windowPosition.x + windowSize.x)
+				rect.right = windowPosition.x + windowSize.x;
+
+			if (rect.bottom > windowPosition.y + windowSize.y)
+				rect.bottom = windowPosition.y + windowSize.y;
+
+			ClipCursor(&rect);
+		}
+
+		void Window::HideCursor() const
+		{
+			::ShowCursor(false);
+		}
+
+		void Window::ShowCursor() const
+		{
+			::ShowCursor(true);
+		}
 	}
 }

@@ -202,7 +202,7 @@ namespace Bear
 				if (!items || !this->length)
 					return;
 
-				if constexpr(RemoveAll)
+				if constexpr (RemoveAll)
 				{
 					ULInt removeElements = 0;
 
@@ -412,7 +412,7 @@ namespace Bear
 
 				T* array = new T[this->length];
 
-				if constexpr(RemoveAll)
+				if constexpr (RemoveAll)
 				{
 					ULInt j = 0;
 					ULInt removeItems = 0;
@@ -688,6 +688,22 @@ namespace Bear
 					*length = this->length;
 
 				return array;
+			}
+
+			template<typename CastType>
+			CastType Cast() const
+			{
+				CastType value(this->length);
+
+				UInt index = 0;
+
+				for (auto& item : value)
+				{
+					item = items[index];
+					index++;
+				}
+
+				return value;
 			}
 		public:
 			void operator=(const DynamicArray<T>& elements)

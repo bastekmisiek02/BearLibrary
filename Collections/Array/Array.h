@@ -59,7 +59,7 @@ namespace Bear
 		public:
 			template<typename... Args>
 			constexpr Array(const Args... args)
-				: ConstBase<T>(size), data{args...}
+				: ConstBase<T>(size), data{ args... }
 			{
 			}
 
@@ -81,6 +81,12 @@ namespace Bear
 			constexpr Iterator end() const
 			{
 				return Iterator(data + size);
+			}
+
+			void Fill(T* elements)
+			{
+				for (ULInt i = 0; i < size; i++)
+					data[i] = elements[i];
 			}
 		};
 

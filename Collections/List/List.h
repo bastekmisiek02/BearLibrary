@@ -59,6 +59,13 @@ namespace Bear
 					Add(element);
 			}
 
+			List(const Iterator& first, const Iterator& end)
+				: firstElement(nullptr), lastElement(nullptr)
+			{
+				for (auto it = first; it != end; it++)
+					Add(*it);
+			}
+
 			~List()
 			{
 				Clear();

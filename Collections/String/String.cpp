@@ -70,11 +70,9 @@ namespace Bear
 			if (src == nullptr)
 				return;
 
-			if (str)
-			{
-				delete[] str;
-				this->length = 0;
-			}
+			delete[] strHeap;
+			strHeap = nullptr;
+			this->length = 0;
 
 			for (ULInt i = 0; ; i++)
 			{
@@ -82,12 +80,26 @@ namespace Bear
 				{
 					this->length = i;
 
-					str = new char[this->length + 1];
+					if (i > BEAR_STRING_SIZE)
+					{
+						strHeap = new char[this->length + 1];
+						{
+							for (ULInt j = 0; j < this->length; j++)
+								strHeap[j] = src[j];
+						}
+						strHeap[this->length] = '\0';
+
+						str = strHeap;
+					}
+					else
 					{
 						for (ULInt j = 0; j < this->length; j++)
-							str[j] = src[j];
+							strStack[j] = src[j];
+
+						strStack[this->length] = '\0';
+
+						str = strStack;
 					}
-					str[this->length] = '\0';
 
 					return;
 				}
@@ -95,36 +107,50 @@ namespace Bear
 		}
 
 		String::String()
-			: str(nullptr)
+			: strHeap(nullptr), strStack(), str(strStack)
 		{
 		}
 
 		String::String(const char* src)
-			: str(nullptr)
+			: strHeap(nullptr), strStack(), str(strStack)
 		{
 			Copy((char*)src);
 		}
 
 		String::String(char* src)
-			: str(nullptr)
+			: strHeap(nullptr), strStack(), str(strStack)
 		{
 			Copy(src);
 		}
 
 		String::String(const String& other)
-			: str(nullptr)
+			: strHeap(nullptr), strStack(), str(strStack)
 		{
 			this->length = other.length;
 			
 			if (other.str == nullptr)
 				return;
 		
-			str = new char[length + 1];
-		
-			for (ULInt i = 0; i < length; i++)
-				str[i] = other.str[i];
-		
-			str[length] = '\0';
+			if (other.length > BEAR_STRING_SIZE)
+			{
+				str = new char[length + 1];
+
+				for (ULInt i = 0; i < length; i++)
+					str[i] = other.str[i];
+
+				str[length] = '\0';
+
+				strHeap = str;
+			}
+			else
+			{
+				for (ULInt i = 0; i < length; i++)
+					strStack[i] = other.str[i];
+
+				strStack[length] = '0';
+
+				str = strStack;
+			}
 		}
 
 		String::~String()
@@ -267,25 +293,13 @@ namespace Bear
 			return str;
 		}
 
-		void String::Swap(String& other)
-		{
-			char* help = other.str;
-			const ULInt length = other.length;
-
-			other.str = this->str;
-			other.length = this->length;
-
-			this->str = help;
-			this->length = length;
-
-			if (onCollectionLengthChanged)
-				onCollectionLengthChanged(this, &other, TypeOfCallback::Swap);
-		}
-
 		void String::Clear()
 		{
-			delete[] str;
+			delete[] strHeap;
+			strHeap = nullptr;
 			str = nullptr;
+
+			strStack[0] = '\0';
 			length = 0;
 
 			if (onCollectionLengthChanged)
@@ -343,17 +357,28 @@ namespace Bear
 
 		void String::operator+=(const char& other)
 		{
-			char* newString = new char[length + 2];
+			if ((this->length + 1) <= BEAR_STRING_SIZE)
 			{
-				for (ULInt i = 0; i < length; i++)
-					newString[i] = str[i];
-
-				newString[length] = other;
-				newString[length + 1] = '\0';
-
-				delete[] str;
+				strStack[length] = other;
+				strStack[length + 1] = '\0';
 			}
-			str = newString;
+			else
+			{
+				char* newString = new char[length + 2];
+				{
+					for (ULInt i = 0; i < length; i++)
+						newString[i] = str[i];
+
+					newString[length] = other;
+					newString[length + 1] = '\0';
+
+					delete[] strHeap;
+				}
+
+				strHeap = newString;
+
+				str = strHeap;
+			}
 
 			length++;
 
@@ -383,18 +408,31 @@ namespace Bear
 				}
 			}
 
-			char* newStr = new char[addedLength + length + 1];
+			if (length + addedLength > BEAR_STRING_SIZE)
 			{
-				for (ULInt i = 0; i < length; i++)
-					newStr[i] = str[i];
+				char* newStr = new char[addedLength + length + 1];
+				{
+					for (ULInt i = 0; i < length; i++)
+						newStr[i] = str[i];
 
-				for (ULInt i = 0; i < addedLength; i++)
-					newStr[i + length] = other[i];
+					for (ULInt i = 0; i < addedLength; i++)
+						newStr[i + length] = other[i];
+				}
+				delete[] strHeap;
+
+				strHeap = newStr;
+				str = strHeap;
+
+				length += addedLength;
 			}
-			delete[] str;
-
-			str = newStr;
-			length += addedLength;
+			else
+			{
+				for (ULInt i = 0; i < addedLength; i++)
+				{
+					strStack[length] = other[i];
+					length++;
+				}
+			}
 
 			str[length] = '\0';
 
@@ -404,6 +442,7 @@ namespace Bear
 
 		void String::operator+=(const String& other)
 		{
+			//Tu teraz
 			ULInt newLength = length + other.length;
 
 			char* newString = new char[newLength + 1];

@@ -2,6 +2,14 @@
 
 #include "../Base.h"
 
+#ifndef BEAR_STRING_SIZE
+	#define BEAR_STRING_SIZE 1023
+#endif
+
+#if BEAR_STRING_SIZE < 1
+	#error "String size can't be less than 1"
+#endif
+
 namespace Bear
 {
 	namespace Collections
@@ -13,6 +21,9 @@ namespace Bear
 		class String : public Base<char>
 		{
 		private:
+			char strStack[BEAR_STRING_SIZE + 1];
+			char* strHeap;
+
 			char* str;
 		public:
 			using Iterator = Iterator<char, StringIterator>;
@@ -37,8 +48,6 @@ namespace Bear
 			const double ToDouble() const;
 		public:
 			const char* const ToCharPtr() const;
-		public:
-			void Swap(String& other);
 		public:
 			void Clear() override;
 		public:

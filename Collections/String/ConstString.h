@@ -145,6 +145,25 @@ namespace Bear
 				return Iterator(str + length);
 			}
 		public:
+			constexpr bool operator==(const ConstString& other) const
+			{
+				if (other.length != length)
+					return false;
+
+				for (ULInt i = 0; i < length; i++)
+				{
+					if (str[i] != other.str[i])
+						return false;
+				}
+
+				return true;
+			}
+
+			constexpr bool operator!=(const ConstString& other) const
+			{
+				return !operator==(other);
+			}
+
 			constexpr const char& operator[](const ULInt& index) const
 			{
 				return str[index];

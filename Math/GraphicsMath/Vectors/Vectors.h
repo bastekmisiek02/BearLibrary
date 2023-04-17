@@ -39,7 +39,9 @@ namespace Bear
 			const float LengthSqr() const;
 			void Normalize();
 			T Dot(const Vec& other) const;
+
 			T& operator[](const char& index);
+			const T& operator[](const char& index) const;
 
 			//Count
 			constexpr char Count() const;
@@ -81,6 +83,19 @@ namespace Bear
 			}
 		
 			T& operator[](const char& index)
+			{
+				switch (index)
+				{
+				case 0:
+					return x;
+				case 1:
+					return y;
+				default:
+					throw "Out of range";
+				}
+			}
+
+			const T& operator[](const char& index) const
 			{
 				switch (index)
 				{
@@ -343,6 +358,21 @@ namespace Bear
 			}
 
 			T& operator[](const char& index)
+			{
+				switch (index)
+				{
+				case 0:
+					return x;
+				case 1:
+					return y;
+				case 2:
+					return z;
+				default:
+					throw "Out of range";
+				}
+			}
+
+			const T& operator[](const char& index) const
 			{
 				switch (index)
 				{
@@ -624,7 +654,7 @@ namespace Bear
 				return *this;
 			}
 
-			T& operator[](const char& index)
+			const T& operator[](const char& index) const
 			{
 				switch (index)
 				{

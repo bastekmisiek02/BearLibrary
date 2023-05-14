@@ -13,7 +13,11 @@ namespace Bear
 		template<typename T, UChar rows, UChar columns>
 		struct Matrix
 		{
+		private:
+			typedef Vec<T, rows> VectorType;
+		public:
 			Matrix();
+			Matrix(const Matrix<T, rows, columns>& matrix);
 
 			void operator+=(const T& scalar);
 			Matrix operator+(const T& scalar);
@@ -27,7 +31,8 @@ namespace Bear
 			void operator-=(const Matrix& matrix);
 			Matrix operator-(const Matrix& matrix);
 
-			T* operator[](const UChar& index);
+			T& operator[](const UChar& index);
+			const T& operator[](const UChar& index) const;
 		};
 
 		template<typename T>
@@ -37,23 +42,25 @@ namespace Bear
 			static constexpr UChar rows = 2;
 			static constexpr UChar columns = 2;
 		private:
-			T data[rows][columns];
+			typedef Vec<T, rows> VectorType;
+		private:
+			VectorType data[columns];
 		public:
 			Matrix()
 				: data{ {1, 0}, {0, 1} }
 			{
 			}
-		public:
-			//scalar
 
+			Matrix(const Matrix<T, rows, columns>& matrix)
+				: data{VectorType(matrix[0]), VectorType(matrix[1])}
+			{
+			}
+		public:
 			//+
 			void operator+=(const T& scalar)
 			{
 				for (UChar i = 0; i < rows; i++)
-				{
-					for (UChar j = 0; j < columns; j++)
-						data[i][j] += scalar;
-				}
+					data[i] += scalar;
 			}
 
 			Matrix operator+(const T& scalar)
@@ -67,10 +74,7 @@ namespace Bear
 			void operator-=(const T& scalar)
 			{
 				for (UChar i = 0; i < rows; i++)
-				{
-					for (UChar j = 0; j < columns; j++)
-						data[i][j] -= scalar;
-				}
+					data[i] -= scalar;
 			}
 
 			Matrix operator-(const T& scalar)
@@ -84,10 +88,7 @@ namespace Bear
 			void operator*=(const T& scalar)
 			{
 				for (UChar i = 0; i < rows; i++)
-				{
-					for (UChar j = 0; j < columns; j++)
-						data[i][j] *= scalar;
-				}
+					data[i] *= scalar;
 			}
 
 			Matrix operator*(const T& scalar)
@@ -103,10 +104,7 @@ namespace Bear
 			void operator+=(const Matrix<T, rows, columns>& matrix)
 			{
 				for (UChar i = 0; i < rows; i++)
-				{
-					for (UChar j = 0; j < columns; j++)
-						data[i][j] += matrix.data[i][j];
-				}
+					data[i] += matrix[i];
 			}
 
 			Matrix<T, rows, columns> operator+(const Matrix<T, rows, columns>& matrix)
@@ -121,10 +119,7 @@ namespace Bear
 			void operator-=(const Matrix<T, rows, columns>& matrix)
 			{
 				for (UChar i = 0; i < rows; i++)
-				{
-					for (UChar j = 0; j < columns; j++)
-						data[i][j] -= matrix.data[i][j];
-				}
+					data[i] -= matrix[i];
 			}
 
 			Matrix<T, rows, columns> operator-(const Matrix<T, rows, columns>& matrix)
@@ -140,14 +135,11 @@ namespace Bear
 			//2
 			void operator*=(const Matrix<T, 2, 2>& matrix)
 			{
-				const T index0 = data[0][0];
-				const T index1 = data[1][0];
+				const VectorType indexA[rows] = { data[0], data[1] };
+				const VectorType indexB[rows] = { matrix[0], matrix[1] };
 
-				data[0][0] = (index0 * matrix.data[0][0]) + (data[0][1] * matrix.data[1][0]);
-				data[0][1] = (index0 * matrix.data[0][1]) + (data[0][1] * matrix.data[1][1]);
-
-				data[1][0] = (index1 * matrix.data[0][0]) + (data[1][1] * matrix.data[1][0]);
-				data[1][1] = (index1 * matrix.data[0][1]) + (data[1][1] * matrix.data[1][1]);
+				for (char i = 0; i < rows; i++)
+					data[i] = (indexA[0] * indexB[i][0]) + (indexA[1] * indexB[i][1]);
 			}
 
 			Matrix<T, 2, 2> operator*(const Matrix<T, 2, 2>& matrix)
@@ -163,12 +155,17 @@ namespace Bear
 			{
 				return
 				{
-					(data[0][0] * vector.x) + (data[0][1] * vector.y),
-					(data[1][0] * vector.x) + (data[1][1] * vector.y)
+					(data[0][0] * vector[0]) + (data[0][1] * vector[1]),
+					(data[1][0] * vector[0]) + (data[1][1] * vector[1])
 				};
 			}
 		public:
-			T* operator[](const UChar& index)
+			VectorType& operator[](const UChar& index)
+			{
+				return data[index];
+			}
+
+			const VectorType& operator[](const UChar& index) const
 			{
 				return data[index];
 			}
@@ -181,10 +178,17 @@ namespace Bear
 			static constexpr UChar rows = 3;
 			static constexpr UChar columns = 3;
 		private:
-			T data[rows][columns];
+			typedef Vec<T, rows> VectorType;
+		private:
+			VectorType data[columns];
 		public:
 			Matrix()
 				: data{ {1, 0, 0}, {0, 1, 0}, {0, 0, 1} }
+			{
+			}
+
+			Matrix(const Matrix<T, rows, columns>& matrix)
+				: data{ VectorType(matrix[0]), VectorType(matrix[1]), VectorType(matrix[2])}
 			{
 			}
 		public:
@@ -194,10 +198,7 @@ namespace Bear
 			void operator+=(const T& scalar)
 			{
 				for (UChar i = 0; i < rows; i++)
-				{
-					for (UChar j = 0; j < columns; j++)
-						data[i][j] += scalar;
-				}
+					data[i] += scalar;
 			}
 
 			Matrix operator+(const T& scalar)
@@ -211,10 +212,7 @@ namespace Bear
 			void operator-=(const T& scalar)
 			{
 				for (UChar i = 0; i < rows; i++)
-				{
-					for (UChar j = 0; j < columns; j++)
-						data[i][j] -= scalar;
-				}
+					data[i] -= scalar;
 			}
 
 			Matrix operator-(const T& scalar)
@@ -228,10 +226,7 @@ namespace Bear
 			void operator*=(const T& scalar)
 			{
 				for (UChar i = 0; i < rows; i++)
-				{
-					for (UChar j = 0; j < columns; j++)
-						data[i][j] *= scalar;
-				}
+					data[i] *= scalar;
 			}
 
 			Matrix operator*(const T& scalar)
@@ -247,10 +242,7 @@ namespace Bear
 			void operator+=(const Matrix<T, rows, columns>& matrix)
 			{
 				for (UChar i = 0; i < rows; i++)
-				{
-					for (UChar j = 0; j < columns; j++)
-						data[i][j] += matrix.data[i][j];
-				}
+					data[i] += matrix[i];
 			}
 
 			Matrix<T, rows, columns> operator+(const Matrix<T, rows, columns>& matrix)
@@ -265,10 +257,7 @@ namespace Bear
 			void operator-=(const Matrix<T, rows, columns>& matrix)
 			{
 				for (UChar i = 0; i < rows; i++)
-				{
-					for (UChar j = 0; j < columns; j++)
-						data[i][j] -= matrix.data[i][j];
-				}
+					data[i] -= matrix[i];
 			}
 
 			Matrix<T, rows, columns> operator-(const Matrix<T, rows, columns>& matrix)
@@ -284,18 +273,11 @@ namespace Bear
 			//3
 			void operator*=(const Matrix<T, 3, 3>& matrix)
 			{
-				const T tmp[rows][columns] =
-				{
-					data[0][0], data[0][1], data[0][2],
-					data[1][0], data[1][1], data[1][2],
-					data[2][0], data[2][1], data[2][2]
-				};
+				const VectorType indexA[rows] = { data[0], data[1], data[2]};
+				const VectorType indexB[rows] = { matrix[0], matrix[1], matrix[2]};
 
-				for (UChar i = 0; i < rows; i++)
-				{
-					for (UChar j = 0; j < columns; j++)
-						data[i][j] = (tmp[i][0] * matrix.data[0][j]) + (tmp[i][1] * matrix.data[1][j]) + (tmp[i][2] * matrix.data[2][j]);
-				}
+				for (char i = 0; i < rows; i++)
+					data[i] = (indexA[0] * indexB[i][0]) + (indexA[1] * indexB[i][1]) + (indexA[2] * indexB[i][2]);
 			}
 
 			Matrix<T, 3, 3> operator*(const Matrix<T, 3, 3>& matrix)
@@ -311,13 +293,18 @@ namespace Bear
 			{
 				return
 				{
-					(data[0][0] * vector.x) + (data[0][1] * vector.y) + (data[0][2] * vector.z),
-					(data[1][0] * vector.x) + (data[1][1] * vector.y) + (data[1][2] * vector.z),
-					(data[2][0] * vector.x) + (data[2][1] * vector.y) + (data[2][2] * vector.z)
+					(data[0][0] * vector[0]) + (data[0][1] * vector[1]) + (data[0][2] * vector[2]),
+					(data[1][0] * vector[0]) + (data[1][1] * vector[1]) + (data[1][2] * vector[2]),
+					(data[2][0] * vector[0]) + (data[2][1] * vector[1]) + (data[2][2] * vector[2])
 				};
 			}
 		public:
-			T* operator[](const UChar& index)
+			VectorType& operator[](const UChar& index)
+			{
+				return data[index];
+			}
+
+			const VectorType& operator[](const UChar& index) const
 			{
 				return data[index];
 			}
@@ -330,7 +317,9 @@ namespace Bear
 			static constexpr UChar rows = 4;
 			static constexpr UChar columns = 4;
 		private:
-			T data[rows][columns];
+			typedef Vec<T, rows> VectorType;
+		private:
+			VectorType data[columns];
 		public:
 			Matrix()
 				: data{ {1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1} }
@@ -343,10 +332,7 @@ namespace Bear
 			void operator+=(const T& scalar)
 			{
 				for (UChar i = 0; i < rows; i++)
-				{
-					for (UChar j = 0; j < columns; j++)
-						data[i][j] += scalar;
-				}
+					data[i] += scalar;
 			}
 
 			Matrix operator+(const T& scalar)
@@ -360,10 +346,7 @@ namespace Bear
 			void operator-=(const T& scalar)
 			{
 				for (UChar i = 0; i < rows; i++)
-				{
-					for (UChar j = 0; j < columns; j++)
-						data[i][j] -= scalar;
-				}
+					data[i] -= scalar;
 			}
 
 			Matrix operator-(const T& scalar)
@@ -377,10 +360,7 @@ namespace Bear
 			void operator*=(const T& scalar)
 			{
 				for (UChar i = 0; i < rows; i++)
-				{
-					for (UChar j = 0; j < columns; j++)
-						data[i][j] *= scalar;
-				}
+					data[i] *= scalar;
 			}
 
 			Matrix operator*(const T& scalar)
@@ -396,10 +376,7 @@ namespace Bear
 			void operator+=(const Matrix<T, rows, columns>& matrix)
 			{
 				for (UChar i = 0; i < rows; i++)
-				{
-					for (UChar j = 0; j < columns; j++)
-						data[i][j] += matrix.data[i][j];
-				}
+					data[i] += matrix[i];
 			}
 
 			Matrix<T, rows, columns> operator+(const Matrix<T, rows, columns>& matrix)
@@ -414,10 +391,7 @@ namespace Bear
 			void operator-=(const Matrix<T, rows, columns>& matrix)
 			{
 				for (UChar i = 0; i < rows; i++)
-				{
-					for (UChar j = 0; j < columns; j++)
-						data[i][j] -= matrix.data[i][j];
-				}
+					data[i] -= matrix[i];
 			}
 
 			Matrix<T, rows, columns> operator-(const Matrix<T, rows, columns>& matrix)
@@ -433,19 +407,11 @@ namespace Bear
 			//4
 			void operator*=(const Matrix<T, 4, 4>& matrix)
 			{
-				const T tmp[rows][columns] =
-				{
-					data[0][0], data[0][1], data[0][2], data[0][3],
-					data[1][0], data[1][1], data[1][2], data[1][3],
-					data[2][0], data[2][1], data[2][2], data[2][3],
-					data[3][0], data[3][1], data[3][2], data[3][3]
-				};
+				const VectorType indexA[rows] = { data[0], data[1], data[2], data[3]};
+				const VectorType indexB[rows] = { matrix[0], matrix[1], matrix[2], matrix[3]};
 
-				for (UChar i = 0; i < rows; i++)
-				{
-					for (UChar j = 0; j < columns; j++)
-						data[i][j] = (tmp[i][0] * matrix.data[0][j]) + (tmp[i][1] * matrix.data[1][j]) + (tmp[i][2] * matrix.data[2][j]) + (tmp[i][3] * matrix.data[3][j]);
-				}
+				for (char i = 0; i < rows; i++)
+					data[i] = (indexA[0] * indexB[i][0]) + (indexA[1] * indexB[i][1]) + (indexA[2] * indexB[i][2]) + (indexA[3] * indexB[i][3]);
 			}
 
 			Matrix<T, 4, 4> operator*(const Matrix<T, 4, 4>& matrix)
@@ -461,154 +427,144 @@ namespace Bear
 			{
 				return
 				{
-					(data[0][0] * vector.x) + (data[0][1] * vector.y) + (data[0][2] * vector.z) + (data[0][3] * vector.w),
-					(data[1][0] * vector.x) + (data[1][1] * vector.y) + (data[1][2] * vector.z) + (data[1][3] * vector.w),
-					(data[2][0] * vector.x) + (data[2][1] * vector.y) + (data[2][2] * vector.z) + (data[2][3] * vector.w),
-					(data[3][0] * vector.x) + (data[3][1] * vector.y) + (data[3][2] * vector.z) + (data[3][3] * vector.w)
+					(data[0][0] * vector[0]) + (data[0][1] * vector[1]) + (data[0][2] * vector[2]) + (data[0][3] * vector[3]),
+					(data[1][0] * vector[0]) + (data[1][1] * vector[1]) + (data[1][2] * vector[2]) + (data[1][3] * vector[3]),
+					(data[2][0] * vector[0]) + (data[2][1] * vector[1]) + (data[2][2] * vector[2]) + (data[2][3] * vector[3]),
+					(data[3][0] * vector[0]) + (data[3][1] * vector[1]) + (data[3][2] * vector[2]) + (data[3][3] * vector[3])
 				};
 			}
 
 			//Translate
-			static Matrix<T, rows, columns> Translate(const Vec<T, 2>& vector)
+			static Matrix<T, rows, columns> TranslateS(const Matrix<T, rows, columns>& m, const Vec<T, 3>& v)
 			{
-				Matrix<T, rows, columns> matrix;
-				matrix.data[0][3] = vector.x;
-				matrix.data[1][3] = vector.y;
-				matrix.data[2][3] = 0;
-			
-				return matrix;
-			}
-			
-			static Matrix<T, rows, columns> Translate(const Vec<T, 3>& vector)
-			{
-				Matrix<T, rows, columns> matrix;
-				matrix.data[0][3] = vector.x;
-				matrix.data[1][3] = vector.y;
-				matrix.data[2][3] = vector.z;
-
-				return matrix;
-			}
-			
-			static Matrix<T, rows, columns> Translate(const Vec<T, 4>& vector)
-			{
-				Matrix<T, rows, columns> matrix;
-				matrix.data[0][3] = vector.x;
-				matrix.data[1][3] = vector.y;
-				matrix.data[2][3] = vector.z;
-			
-				return matrix;
-			}
-			
-			//Rotation			
-			static Matrix<T, rows, columns> RotateX(const T& angle)
-			{
-				const double radians = angle * 0.0174532925;
-				const T sin = ::sin(radians);
-				const T cos = ::cos(radians);
-
-				Matrix<T, rows, columns> matrix;
-				matrix.data[1][1] = cos;
-				matrix.data[1][2] = -sin;
-
-				matrix.data[2][1] = sin;
-				matrix.data[2][2] = cos;
-			
-				return matrix;
-			}
-
-			static Matrix<T, rows, columns> RotateY(const T& angle)
-			{
-				const double radians = angle * 0.0174532925;
-				const T sin = ::sin(radians);
-				const T cos = ::cos(radians);
-
-				Matrix<T, rows, columns> matrix;
-				matrix.data[0][0] = cos;
-				matrix.data[0][2] = sin;
-
-				matrix.data[2][0] = -sin;
-				matrix.data[2][2] = cos;
+				Matrix<T, rows, columns> matrix(m);
+				matrix[3] = m[0] * v[0] + m[1] * v[1] + m[2] * v[2] + m[3];
 
 				return matrix;
 			}
 
-			static Matrix<T, rows, columns> RotateZ(const T& angle)
+			void Translate(const Vec<T, 3>& vector)
 			{
-				const double radians = angle * 0.0174532925;
-				const T sin = ::sin(radians);
-				const T cos = ::cos(radians);
-
-				Matrix<T, rows, columns> matrix;
-				matrix.data[0][0] = cos;
-				matrix.data[0][1] = -sin;
-
-				matrix.data[1][0] = sin;
-				matrix.data[1][1] = cos;
-
-				return matrix;
+				data[3] = data[0] * vector[0] + data[1] * vector[1] + data[2] * vector[2] + data[3];
 			}
 			
+			//Rotation
+			static Matrix<T, rows, columns> RotateS(const Matrix<T, rows, columns>& m, const T& angle, const Vec<T, 3>& v)
+			{
+				const T c = ::cos(angle * 0.01745329f);
+				const T s = ::sin(angle * 0.01745329f);
+
+				Vec<T, 3> axis(v);
+				axis.Normalize();
+				Vec<T, 3> temp(axis * (T(1) - c));
+
+				Matrix rotate;
+				rotate[0][0] = c + temp[0] * axis[0];
+				rotate[0][1] = temp[0] * axis[1] + s * axis[2];
+				rotate[0][2] = temp[0] * axis[2] - s * axis[1];
+
+				rotate[1][0] = temp[1] * axis[0] - s * axis[2];
+				rotate[1][1] = c + temp[1] * axis[1];
+				rotate[1][2] = temp[1] * axis[2] + s * axis[0];
+
+				rotate[2][0] = temp[2] * axis[0] + s * axis[1];
+				rotate[2][1] = temp[2] * axis[1] - s * axis[0];
+				rotate[2][2] = c + temp[2] * axis[2];
+
+				Matrix result;
+				result[0] = m[0] * rotate[0][0] + m[1] * rotate[0][1] + m[2] * rotate[0][2];
+				result[1] = m[0] * rotate[1][0] + m[1] * rotate[1][1] + m[2] * rotate[1][2];
+				result[2] = m[0] * rotate[2][0] + m[1] * rotate[2][1] + m[2] * rotate[2][2];
+				result[3] = m[3];
+
+				return result;
+			}
+
+			void Rotate(const T& angle, const Vec<T, 3>& vector)
+			{
+				*this = RotateS(*this, angle, vector);
+			}
+
 			//Scale
-			static Matrix<T, rows, columns> Scale(const Vec<T, 2>& vector)
+			static Matrix<T, rows, columns> ScaleS(const Matrix<T, rows, columns>& m, const Vec<T, 3>& vector)
 			{
 				Matrix<T, rows, columns> matrix;
-				matrix.data[0][0] = vector.x;
-				matrix.data[1][1] = vector.y;
 
+				for (UChar i = 0; i < 3; i++)
+					matrix[i] = m[i] * vector[i];
+
+				matrix[3] = m[3];
+			
 				return matrix;
 			}
 
-			static Matrix<T, rows, columns> Scale(const Vec<T, 3>& vector)
+			void Scale(const Vec<T, 3>& vector)
 			{
-				Matrix<T, rows, columns> matrix;
-				matrix.data[0][0] = vector.x;
-				matrix.data[1][1] = vector.y;
-				matrix.data[2][2] = vector.z;
-
-				return matrix;
+				for (UChar i = 0; i < 3; i++)
+					data[i] = data[i] * vector[i];
 			}
 
-			static Matrix<T, rows, columns> Scale(const Vec<T, 4>& vector)
+			//LookAt
+			static Matrix<T, 4, 4> LookAt(const Vec<T, 3>& eye, const Vec<T, 3>& center, const Vec<T, 3>& up)
 			{
-				Matrix<T, rows, columns> matrix;
-				matrix.data[0][0] = vector.x;
-				matrix.data[1][1] = vector.y;
-				matrix.data[2][2] = vector.z;
-				matrix.data[3][3] = vector.w;
+				Vec<T, 3> f(center - eye);
+				f.Normalize();
 
-				return matrix;
+				Vec<T, 3> s(f);
+				s.Cross(up);
+				s.Normalize();
+
+				Vec<T, 3> u(s);
+				u.Cross(f);
+
+				Matrix<T, 4, 4> result;
+				result[0][0] = s.x;
+				result[1][0] = s.y;
+				result[2][0] = s.z;
+				result[0][1] = u.x;
+				result[1][1] = u.y;
+				result[2][1] = u.z;
+				result[0][2] = -f.x;
+				result[1][2] = -f.y;
+				result[2][2] = -f.z;
+				result[3][0] = -s.Dot(eye);
+				result[3][1] = -u.Dot(eye);
+				result[3][2] = f.Dot(eye);
+
+				return result;
 			}
 
 			static Matrix<T, 4, 4> Ortho(const T& left, const T& right, const T& bottom, const T& top, const T& near, const T& far)
 			{
-				Matrix<T, 4, 4> matrix;
-
-				matrix.data[0][0] = (T)2 / (right - left);
-				matrix.data[1][1] = (T)2 / (top - bottom);
-				matrix.data[2][2] = (T)-2 / (far - near);
-
-				matrix.data[0][3] = -(right + left) / (right - left);
-				matrix.data[1][3] = -(top + bottom) / (top - bottom);
-				matrix.data[2][3] = -(far + near) / (far - near);
-
-				return matrix;
+				Matrix<T, 4, 4> result;
+				result[0][0] = (T)2 / (right - left);
+				result[1][1] = (T)2 / (top - bottom);
+				result[2][2] = -(T)1;
+				result[3][0] = -(right + left) / (right - left);
+				result[3][1] = -(top + bottom) / (top - bottom);
+				return result;
 			}
-
+			
 			static Matrix<T, 4, 4> Perspective(const T& fov, const T& aspect, const T& near, const T& far)
 			{
 				const T halfFovTan = ::tan(fov / (T)2);
-
-				Matrix<T, 4, 4> matrix = Scale({ (T)0, (T)0, (T)0, (T)0 });
+			
+				Matrix<T, 4, 4> matrix = ScaleS(Matrix<T, 4, 4>(), {(T)0, (T)0, (T)0});
 				matrix[0][0] = (T)1 / (aspect * halfFovTan);
 				matrix[1][1] = (T)1 / halfFovTan;
-				matrix[2][2] = far / (far - near);
-				matrix[3][2] = 1;
-				matrix[2][3] = -(far * near) / (far - near);
-
+				matrix[2][2] = far / (near - far);
+				matrix[2][3] = 1;
+				matrix[3][2] = -(far * near) / (far - near);
+			
 				return matrix;
 			}
 		public:
-			T* operator[](const UChar& index)
+			VectorType& operator[](const UChar& index)
+			{
+				return data[index];
+			}
+
+			const VectorType& operator[](const UChar& index) const
 			{
 				return data[index];
 			}

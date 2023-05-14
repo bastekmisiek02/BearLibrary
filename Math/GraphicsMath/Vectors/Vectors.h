@@ -75,11 +75,9 @@ namespace Bear
 			Vec(const Vec<T, 3>& other) : x(other.x), y(other.y) {}
 			Vec(const Vec<T, 4>& other) : x(other.x), y(other.y) {}
 		
-			Vec<T, 2>& operator-()
+			Vec<T, 2> operator-() const
 			{
-				x = -x;
-				y = -y;
-				return *this;
+				return Vec<T, 2>{ -x, -y };
 			}
 		
 			T& operator[](const char& index)
@@ -277,7 +275,7 @@ namespace Bear
 			//Length
 			const T Length() const
 			{
-				return Math::Sqrt<T>((x * x) + (y * y));
+				return (T)Math::Sqrt((x * x) + (y * y));
 			}
 		
 			const T LengthSqr() const
@@ -349,12 +347,9 @@ namespace Bear
 			Vec(const Vec<T, 3>& other) : x(other.x), y(other.y), z(other.z) {}
 			Vec(const Vec<T, 4>& other) : x(other.x), y(other.y), z(other.z) {}
 
-			Vec<T, 3>& operator-()
+			Vec<T, 3> operator-() const
 			{
-				x = -x;
-				y = -y;
-				z = -z;
-				return *this;
+				return Vec<T, 3>{ -x, -y, -z };
 			}
 
 			T& operator[](const char& index)
@@ -566,7 +561,7 @@ namespace Bear
 			//Length
 			const T Length() const
 			{
-				return Math::Sqrt<T>((x * x) + (y * y) + (z * z));
+				return (T)Math::Sqrt((x * x) + (y * y) + (z * z));
 			}
 
 			const T LengthSqr() const
@@ -645,13 +640,26 @@ namespace Bear
 			Vec(const Vec<T, 3>& other) : x(other.x), y(other.y), z(other.z), w((T)1.0) {}
 			Vec(const Vec<T, 4>& other) : x(other.x), y(other.y), z(other.z), w(other.w) {}
 
-			Vec<T, 4>& operator-()
+			Vec<T, 4> operator-() const
 			{
-				x = -x;
-				y = -y;
-				z = -z;
-				w = -w;
-				return *this;
+				return Vec<T, 4>{ -x, -y, -z, -w };
+			}
+
+			T& operator[](const char& index)
+			{
+				switch (index)
+				{
+				case 0:
+					return x;
+				case 1:
+					return y;
+				case 2:
+					return z;
+				case 3:
+					return w;
+				default:
+					throw "Out of range";
+				}
 			}
 
 			const T& operator[](const char& index) const
@@ -857,7 +865,7 @@ namespace Bear
 			//Length
 			const T Length() const
 			{
-				return Math::Sqrt<T>((x * x) + (y * y) + (z * z) + (w * w));
+				return (T)Math::Sqrt((x * x) + (y * y) + (z * z) + (w * w));
 			}
 
 			const T LengthSqr() const

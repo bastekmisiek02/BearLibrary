@@ -25,67 +25,55 @@ namespace Bear
 		{
 			HWND attachment = (HWND)instance;
 
+			Window* window = SearchWindow(attachment);
+
+			if (!window)
+				return DefWindowProcA(attachment, msg, wParam, lParam);
+
 			switch (msg)
 			{
-			case WM_MOUSEMOVE:
-			{
-				if (Window* window = SearchWindow(attachment))
+				case WM_MOUSEMOVE:
 				{
 					if (window->OnMouseMoveCallback)
 						window->OnMouseMoveCallback(window, { LOWORD(lParam), HIWORD(lParam) });
-				}
 
-				break;
-			}
-			case WM_LBUTTONDOWN:
-			case WM_RBUTTONDOWN:
-			case WM_MBUTTONDOWN:
-			case WM_XBUTTONDOWN:
-			{
-				if (Window* window = SearchWindow(attachment))
+					break;
+				}
+				case WM_LBUTTONDOWN:
+				case WM_RBUTTONDOWN:
+				case WM_MBUTTONDOWN:
+				case WM_XBUTTONDOWN:
 				{
 					if (window->OnMouseClickCallback)
 						window->OnMouseClickCallback(window, (MouseButton)wParam, { LOWORD(lParam), HIWORD(lParam) }, wParam & MK_CONTROL, wParam & MK_SHIFT);
+					
+					break;
 				}
-
-				break;
-			}
-			case WM_MOUSEWHEEL:
-			{
-				if (Window* window = SearchWindow(attachment))
+				case WM_MOUSEWHEEL:
 				{
 					if (window->OnMouseScrollCallback)
 						window->OnMouseScrollCallback(window, (HIWORD(wParam) == WHEEL_DELTA));
-				}
 
-				break;
-			}
-			case WM_CHAR:
-			{
-				if (Window* window = SearchWindow(attachment))
+					break;
+				}
+				case WM_CHAR:
 				{
-					if (window->OnKeyClickCallback)
-						window->OnKeyClickCallback(window, (KeyCode)wParam);
-				}
+					if (window->OnCharClickCallback)
+						window->OnCharClickCallback(window, (KeyCode)wParam);
 
-				break;
-			}
-			case WM_MOVE:
-			{
-				if (Window* window = SearchWindow(attachment))
+					break;
+				}
+				case WM_MOVE:
 				{
 					if (window->OnMoveCallback)
 						window->OnMoveCallback(window, { LOWORD(lParam), HIWORD(lParam) });
+
+					break;
 				}
-
-				break;
-			}
-			case WM_GETMINMAXINFO:
-			{
-				MINMAXINFO* mmi = (MINMAXINFO*)lParam;
-
-				if (Window* window = SearchWindow(attachment))
+				case WM_GETMINMAXINFO:
 				{
+					MINMAXINFO* mmi = (MINMAXINFO*)lParam;
+
 					if (window->minSize.x || window->minSize.y)
 					{
 						mmi->ptMinTrackSize.x = window->minSize.x;
@@ -100,13 +88,10 @@ namespace Bear
 
 					window->minSize = { mmi->ptMinTrackSize.x, mmi->ptMinTrackSize.y };
 					window->maxSize = { mmi->ptMaxTrackSize.x, mmi->ptMaxTrackSize.y };
-				}
 
-				break;
-			}
-			case WM_SIZE:
-			{
-				if (Window* window = SearchWindow(attachment))
+					break;
+				}
+				case WM_SIZE:
 				{
 					if (window->OnResizeCallback)
 					{
@@ -135,64 +120,57 @@ namespace Bear
 
 						window->OnResizeCallback(window, { LOWORD(lParam), HIWORD(lParam) }, state);
 					}
+
+					break;
 				}
-
-				break;
-			}
-			case WM_CLOSE:
-			{
-				const char* nameClass = nullptr;
-
-				if (Window* window = SearchWindow(attachment))
+				case WM_CLOSE:
 				{
+					const char* nameClass = nullptr;
+
 					if (window->OnCloseCallback)
 						window->OnCloseCallback(window);
 
 					nameClass = window->nameClass;
+
+					DestroyWindow(attachment);
+
+					if (nameClass)
+						UnregisterClassA(nameClass, nullptr);
+
+					break;
 				}
-
-				DestroyWindow(attachment);
-
-				if (nameClass)
-					UnregisterClassA(nameClass, nullptr);
-
-				break;
-			}
-			case WM_DESTROY:
-			{
-				if (Window* window = SearchWindow(attachment))
+				case WM_DESTROY:
 				{
 					if (window->OnDestroyCallback)
 						window->OnDestroyCallback(window);
-
+					
 					window->destroyed = true;
-				}
 
-				bool quit = true;
+					bool quit = true;
 
-				for (const auto& window : windows)
-				{
-					if (!window->destroyed)
+					for (const auto& window : windows)
 					{
-						quit = false;
-						break;
+						if (!window->destroyed)
+						{
+							quit = false;
+							break;
+						}
 					}
+
+					if (quit)
+						PostQuitMessage(0);
+
+					break;
 				}
-
-				if (quit)
-					PostQuitMessage(0);
-
-				break;
-			}
-			default:
-				return DefWindowProcA(attachment, msg, wParam, lParam);
+				default:
+					return DefWindowProcA(attachment, msg, wParam, lParam);
 			}
 
 			return 0;
 		}
 
 		Window::Window(const Vector& size, const Vector& position, const char* title, const PointerType& pointerType, const Window* parent, const char* className, const char* pathToTaskBarImage, const char* pathToImage, const State& windowState, const Style& windowStyle)
-			: style(windowStyle), destroyed(false), OnCloseCallback(nullptr), OnDestroyCallback(nullptr), OnKeyClickCallback(nullptr), OnMouseClickCallback(nullptr), OnMouseMoveCallback(nullptr), OnMouseScrollCallback(nullptr), OnMoveCallback(nullptr), OnResizeCallback(nullptr), minSize(), maxSize()
+			: style(windowStyle), destroyed(false), OnCloseCallback(nullptr), OnDestroyCallback(nullptr), OnCharClickCallback(nullptr), OnMouseClickCallback(nullptr), OnMouseMoveCallback(nullptr), OnMouseScrollCallback(nullptr), OnMoveCallback(nullptr), OnResizeCallback(nullptr), minSize(), maxSize()
 		{
 			nameClass = !className ? title : className;
 
@@ -232,7 +210,7 @@ namespace Bear
 		}
 
 		Window::Window(const Vector& size, const Vector& position, const char* title, const char* pointerFileName, const Window* parent, const char* className, const char* pathToTaskBarImage, const char* pathToImage, const State& windowState, const Style& windowStyle)
-			: style(windowStyle), destroyed(false), OnMouseMoveCallback(nullptr), OnMouseClickCallback(nullptr), OnMouseScrollCallback(nullptr), OnKeyClickCallback(nullptr), OnMoveCallback(nullptr), OnResizeCallback(nullptr), OnCloseCallback(nullptr), OnDestroyCallback(nullptr), minSize(), maxSize()
+			: style(windowStyle), destroyed(false), OnMouseMoveCallback(nullptr), OnMouseClickCallback(nullptr), OnMouseScrollCallback(nullptr), OnCharClickCallback(nullptr), OnMoveCallback(nullptr), OnResizeCallback(nullptr), OnCloseCallback(nullptr), OnDestroyCallback(nullptr), minSize(), maxSize()
 		{
 			nameClass = !className ? title : className;
 

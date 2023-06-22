@@ -186,7 +186,7 @@ namespace Bear
 			typedef void(*OnMouseMove)(const Window* window, const Vector mousePosition);
 			typedef void(*OnMouseClick)(const Window* window, const MouseButton mouseButton, const Vector mousePosition, const bool controlClicked, const bool shiftClicked);
 			typedef void(*OnMouseScroll)(const Window* window, const bool offset);
-			typedef void(*OnKeyClick)(const Window* window, const KeyCode key);
+			typedef void(*OnCharClick)(const Window* window, const KeyCode key);
 			typedef void(*OnMove)(const Window* window, const Vector position);
 			typedef void(*OnResize)(const Window* window, const Vector size, const State state);
 			typedef void(*OnClose)(const Window* window);
@@ -195,7 +195,7 @@ namespace Bear
 			OnMouseMove OnMouseMoveCallback;
 			OnMouseClick OnMouseClickCallback;
 			OnMouseScroll OnMouseScrollCallback;
-			OnKeyClick OnKeyClickCallback;
+			OnCharClick OnCharClickCallback;
 			OnMove OnMoveCallback;
 			OnResize OnResizeCallback;
 			OnClose OnCloseCallback;

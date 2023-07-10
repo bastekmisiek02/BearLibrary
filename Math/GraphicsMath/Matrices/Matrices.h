@@ -52,7 +52,7 @@ namespace Bear
 			}
 
 			Matrix(const Matrix<T, rows, columns>& matrix)
-				: data{VectorType(matrix[0]), VectorType(matrix[1])}
+				: data{ VectorType(matrix[0]), VectorType(matrix[1]) }
 			{
 			}
 		public:
@@ -188,7 +188,7 @@ namespace Bear
 			}
 
 			Matrix(const Matrix<T, rows, columns>& matrix)
-				: data{ VectorType(matrix[0]), VectorType(matrix[1]), VectorType(matrix[2])}
+				: data{ VectorType(matrix[0]), VectorType(matrix[1]), VectorType(matrix[2]) }
 			{
 			}
 		public:
@@ -273,8 +273,8 @@ namespace Bear
 			//3
 			void operator*=(const Matrix<T, 3, 3>& matrix)
 			{
-				const VectorType indexA[rows] = { data[0], data[1], data[2]};
-				const VectorType indexB[rows] = { matrix[0], matrix[1], matrix[2]};
+				const VectorType indexA[rows] = { data[0], data[1], data[2] };
+				const VectorType indexB[rows] = { matrix[0], matrix[1], matrix[2] };
 
 				for (char i = 0; i < rows; i++)
 					data[i] = (indexA[0] * indexB[i][0]) + (indexA[1] * indexB[i][1]) + (indexA[2] * indexB[i][2]);
@@ -407,8 +407,8 @@ namespace Bear
 			//4
 			void operator*=(const Matrix<T, 4, 4>& matrix)
 			{
-				const VectorType indexA[rows] = { data[0], data[1], data[2], data[3]};
-				const VectorType indexB[rows] = { matrix[0], matrix[1], matrix[2], matrix[3]};
+				const VectorType indexA[rows] = { data[0], data[1], data[2], data[3] };
+				const VectorType indexB[rows] = { matrix[0], matrix[1], matrix[2], matrix[3] };
 
 				for (char i = 0; i < rows; i++)
 					data[i] = (indexA[0] * indexB[i][0]) + (indexA[1] * indexB[i][1]) + (indexA[2] * indexB[i][2]) + (indexA[3] * indexB[i][3]);
@@ -447,7 +447,7 @@ namespace Bear
 			{
 				data[3] = data[0] * vector[0] + data[1] * vector[1] + data[2] * vector[2] + data[3];
 			}
-			
+
 			//Rotation
 			static Matrix<T, rows, columns> RotateS(const Matrix<T, rows, columns>& m, const T& angle, const Vec<T, 3>& v)
 			{
@@ -494,7 +494,7 @@ namespace Bear
 					matrix[i] = m[i] * vector[i];
 
 				matrix[3] = m[3];
-			
+
 				return matrix;
 			}
 
@@ -511,11 +511,11 @@ namespace Bear
 				f.Normalize();
 
 				Vec<T, 3> s(f);
-				s.Cross(up);
+				s = s.Cross(up);
 				s.Normalize();
 
 				Vec<T, 3> u(s);
-				u.Cross(f);
+				u = u.Cross(f);
 
 				Matrix<T, 4, 4> result;
 				result[0][0] = s.x;
@@ -544,18 +544,20 @@ namespace Bear
 				result[3][1] = -(top + bottom) / (top - bottom);
 				return result;
 			}
-			
+
 			static Matrix<T, 4, 4> Perspective(const T& fov, const T& aspect, const T& near, const T& far)
 			{
-				const T halfFovTan = ::tan(fov / (T)2);
-			
-				Matrix<T, 4, 4> matrix = ScaleS(Matrix<T, 4, 4>(), {(T)0, (T)0, (T)0});
+				const T halfFovTan = ::tan((fov) / (T)2);
+
+				Matrix<T, 4, 4> matrix = ScaleS(Matrix<T, 4, 4>(), { (T)0, (T)0, (T)0 });
+				matrix[3] = 0.0f;
+
 				matrix[0][0] = (T)1 / (aspect * halfFovTan);
 				matrix[1][1] = (T)1 / halfFovTan;
 				matrix[2][2] = far / (near - far);
-				matrix[2][3] = 1;
+				matrix[2][3] = -1;
 				matrix[3][2] = -(far * near) / (far - near);
-			
+
 				return matrix;
 			}
 		public:
@@ -575,12 +577,12 @@ namespace Bear
 		typedef Matrix<char, 2, 2> CMat2;
 		//typedef Matrix<char, 2, 3> CMat2x3;
 		//typedef Matrix<char, 2, 4> CMat2x4;
-		
+
 		//Mat3
 		//typedef Matrix<char, 3, 2> CMat3x2;
 		typedef Matrix<char, 3, 3> CMat3;
 		//typedef Matrix<char, 3, 4> CMat3x4;
-		
+
 		//Mat4
 		//typedef Matrix<char, 4, 2> CMat4x2;
 		//typedef Matrix<char, 4, 3> CMat4x3;
@@ -591,12 +593,12 @@ namespace Bear
 		typedef Matrix<UChar, 2, 2> UCMat2;
 		//typedef Matrix<UChar, 2, 3> UCMat2x3;
 		//typedef Matrix<UChar, 2, 4> UCMat2x4;
-		
+
 		//Mat3
 		//typedef Matrix<UChar, 3, 2> UCMat3x2;
 		typedef Matrix<UChar, 3, 3> UCMat3;
 		//typedef Matrix<UChar, 3, 4> UCMat3x4;
-		
+
 		//Mat4
 		//typedef Matrix<UChar, 4, 2> UCMat4x2;
 		//typedef Matrix<UChar, 4, 3> UCMat4x3;

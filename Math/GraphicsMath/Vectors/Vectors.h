@@ -56,30 +56,30 @@ namespace Bear
 				{
 					T x, y;
 				};
-		
+
 				struct
 				{
 					T r, g;
 				};
-		
+
 				struct
 				{
 					T s, t;
 				};
 			};
-		
+
 			Vec() : x((T)0.0), y((T)0.0) {}
 			Vec(const T& value) : x(value), y(value) {}
 			Vec(const T& x, const T& y) : x(x), y(y) {}
 			Vec(const Vec<T, 2>& other) : x(other.x), y(other.y) {}
 			Vec(const Vec<T, 3>& other) : x(other.x), y(other.y) {}
 			Vec(const Vec<T, 4>& other) : x(other.x), y(other.y) {}
-		
+
 			Vec<T, 2> operator-() const
 			{
 				return Vec<T, 2>{ -x, -y };
 			}
-		
+
 			T& operator[](const char& index)
 			{
 				switch (index)
@@ -105,92 +105,92 @@ namespace Bear
 					throw "Out of range";
 				}
 			}
-		
+
 			//scalar
 			Vec<T, 2> operator+(const T& scalar) const
 			{
 				return { x + scalar, y + scalar };
 			}
-		
+
 			Vec<T, 2> operator-(const T& scalar) const
 			{
 				return { x - scalar, y - scalar };
 			}
-		
+
 			Vec<T, 2> operator*(const T& scalar) const
 			{
 				return { x * scalar, y * scalar };
 			}
-		
+
 			Vec<T, 2> operator/(const T& scalar) const
 			{
 				if (!scalar)
 					throw "Can't division by 0";
-		
+
 				return { x / scalar, y / scalar };
 			}
-		
+
 			Vec<T, 2>& operator+=(const T& scalar)
 			{
 				x += scalar;
 				y += scalar;
 				return *this;
 			}
-		
+
 			Vec<T, 2>& operator-=(const T& scalar)
 			{
 				x -= scalar;
 				y -= scalar;
 				return *this;
 			}
-		
+
 			Vec<T, 2>& operator*=(const T& scalar)
 			{
 				x *= scalar;
 				y *= scalar;
 				return *this;
 			}
-		
+
 			Vec<T, 2>& operator/=(const T& scalar)
 			{
 				if (!scalar)
 					throw "Can't division by 0";
-		
+
 				x /= scalar;
 				y /= scalar;
 				return *this;
 			}
-		
+
 			//Vec2
 			Vec<T, 2> operator+(const Vec<T, 2>& other) const
 			{
 				return { x + other.x, y + other.y };
 			}
-		
+
 			Vec<T, 2> operator-(const Vec<T, 2>& other) const
 			{
 				return { x - other.x, y - other.y };
 			}
-		
+
 			Vec<T, 2> operator*(const Vec<T, 2>& other) const
 			{
 				return { x * other.x, y * other.y };
 			}
-		
+
 			Vec<T, 2>& operator+=(const Vec<T, 2>& other)
 			{
 				x += other.x;
 				y += other.y;
 				return *this;
 			}
-		
+
 			Vec<T, 2>& operator-=(const Vec<T, 2>& other)
 			{
 				x -= other.x;
 				y -= other.y;
 				return *this;
 			}
-		
+
 			Vec<T, 2>& operator*=(const Vec<T, 2>& other)
 			{
 				x *= other.x;
@@ -271,30 +271,30 @@ namespace Bear
 				y *= other.y;
 				return *this;
 			}
-		
+
 			//Length
 			const T Length() const
 			{
 				return (T)Math::Sqrt((x * x) + (y * y));
 			}
-		
+
 			const T LengthSqr() const
 			{
 				return (x * x) + (y * y);
 			}
-		
+
 			//Normalize
 			void Normalize()
 			{
 				const T length = Length();
-		
+
 				if (length == (T)1.0)
 					return;
-		
+
 				x /= length;
 				y /= length;
 			}
-		
+
 			//Dot product
 			T Dot(const Vec<T, 2>& other) const
 			{
@@ -309,7 +309,7 @@ namespace Bear
 
 			Vec<T, 4> ToVec4() const
 			{
-				return { x, y, (T)0.0, (T)0.0};
+				return { x, y, (T)0.0, (T)0.0 };
 			}
 
 			//Count
@@ -486,7 +486,7 @@ namespace Bear
 
 			Vec<T, 3> operator-(const Vec<T, 3>& other) const
 			{
-				return { x - other.x, y - other.y, z - other.z};
+				return { x - other.x, y - other.y, z - other.z };
 			}
 
 			Vec<T, 3> operator*(const Vec<T, 3>& other) const
@@ -593,7 +593,7 @@ namespace Bear
 			{
 				return { (y * other.z) - (z * other.y), (z * other.x) - (x * other.z), (x * other.y) - (y * other.x) };
 			}
-			
+
 			//Cast operator
 			Vec<T, 2> ToVec2() const
 			{
@@ -827,7 +827,7 @@ namespace Bear
 
 			Vec<T, 4> operator-(const Vec<T, 4>& other) const
 			{
-				return { x - other.x, y - other.y, z - other.z. w - other.w };
+				return { x - other.x, y - other.y, z - other.z.w - other.w };
 			}
 
 			Vec<T, 4> operator*(const Vec<T, 4>& other) const

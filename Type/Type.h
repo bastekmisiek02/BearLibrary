@@ -124,6 +124,90 @@ namespace Bear
 		{
 			static constexpr bool value = true;
 		};
+
+		template<>
+		struct _IsFloatingPoint<long double>
+		{
+			static constexpr bool value = true;
+		};
+
+		template<typename Type>
+		struct _IsSimple
+		{
+			static constexpr bool value = false;
+		};
+
+		template<>
+		struct _IsSimple<char>
+		{
+			static constexpr bool value = true;
+		};
+
+		template<>
+		struct _IsSimple<UChar>
+		{
+			static constexpr bool value = true;
+		};
+
+		template<>
+		struct _IsSimple<bool>
+		{
+			static constexpr bool value = true;
+		};
+
+		template<>
+		struct _IsSimple<USInt>
+		{
+			static constexpr bool value = true;
+		};
+
+		template<>
+		struct _IsSimple<SInt>
+		{
+			static constexpr bool value = true;
+		};
+
+		template<>
+		struct _IsSimple<UInt>
+		{
+			static constexpr bool value = true;
+		};
+
+		template<>
+		struct _IsSimple<int>
+		{
+			static constexpr bool value = true;
+		};
+
+		template<>
+		struct _IsSimple<ULInt>
+		{
+			static constexpr bool value = true;
+		};
+
+		template<>
+		struct _IsSimple<LInt>
+		{
+			static constexpr bool value = true;
+		};
+
+		template<>
+		struct _IsSimple<float>
+		{
+			static constexpr bool value = true;
+		};
+
+		template<>
+		struct _IsSimple<double>
+		{
+			static constexpr bool value = true;
+		};
+
+		template<>
+		struct _IsSimple<long double>
+		{
+			static constexpr bool value = true;
+		};
 	public:
 		static Collections::String GetFullName()
 		{
@@ -175,6 +259,11 @@ namespace Bear
 		static constexpr bool IsFloatingPoint()
 		{
 			return _IsFloatingPoint<T>::value;
+		}
+
+		static constexpr bool IsSimple()
+		{
+			return _IsSimple<T>::value;
 		}
 
 		static constexpr ULInt GetID()

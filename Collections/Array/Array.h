@@ -88,6 +88,12 @@ namespace Bear
 				for (ULInt i = 0; i < size; i++)
 					data[i] = elements[i];
 			}
+
+			void Fill(const T& value)
+			{
+				for (ULInt i = 0; i < size; i++)
+					data[i] = value;
+			}
 		};
 
 		template<typename T, typename... Args>

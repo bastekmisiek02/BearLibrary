@@ -43,6 +43,7 @@ namespace Bear
 			List()
 				: firstElement(nullptr), lastElement(nullptr)
 			{
+				this->capacity = this->length;
 			}
 
 			List(const std::initializer_list<T>& list)
@@ -50,6 +51,8 @@ namespace Bear
 			{
 				for (const auto& element : list)
 					Add(element);
+
+				this->capacity = this->length;
 			}
 
 			List(const List<T>& elements)
@@ -57,6 +60,8 @@ namespace Bear
 			{
 				for (const auto& element : elements)
 					Add(element);
+
+				this->capacity = this->length;
 			}
 
 			List(const Iterator& first, const Iterator& end)
@@ -64,6 +69,8 @@ namespace Bear
 			{
 				for (auto it = first; it != end; it++)
 					Add(*it);
+
+				this->capacity = this->length;
 			}
 
 			~List()

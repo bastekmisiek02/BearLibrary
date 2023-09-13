@@ -4,6 +4,10 @@
 
 #include <initializer_list>
 
+#ifndef BEAR_DEFAULT_CAPACITY
+	#define BEAR_DEFAULT_CAPACITY 10
+#endif
+
 namespace Bear
 {
 	namespace Collections
@@ -93,20 +97,26 @@ namespace Bear
 			OnCollectionLengthChanged onCollectionLengthChanged;
 		protected:
 			ULInt length;
+			ULInt capacity;
 		protected:
 			Base()
-				: length(0), onCollectionLengthChanged(nullptr)
+				: length(0), capacity(BEAR_DEFAULT_CAPACITY), onCollectionLengthChanged(nullptr)
 			{
 			}
 
-			Base(const ULInt& length)
-				: length(length), onCollectionLengthChanged(nullptr)
+			Base(const ULInt& capacity)
+				: length(0), capacity(capacity), onCollectionLengthChanged(nullptr)
 			{
 			}
 		public:
 			virtual const ULInt Length() const
 			{
 				return this->length;
+			}
+
+			const ULInt Capacity() const
+			{
+				return this->capacity;
 			}
 		public:
 			void SetOnCollectionLengthChanged(const OnCollectionLengthChanged& callback)

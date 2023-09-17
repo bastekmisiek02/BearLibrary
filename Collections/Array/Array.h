@@ -94,6 +94,16 @@ namespace Bear
 				for (ULInt i = 0; i < size; i++)
 					data[i] = value;
 			}
+
+			constexpr T& operator[](const UInt& index)
+			{
+				return data[index];
+			}
+
+			constexpr const T& operator[](const UInt& index) const
+			{
+				return data[index];
+			}
 		};
 
 		template<typename T, typename... Args>

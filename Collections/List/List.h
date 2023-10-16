@@ -123,6 +123,8 @@ namespace Bear
 
 				if (this->onCollectionLengthChanged)
 					this->onCollectionLengthChanged(this, (void*)&element, TypeOfCallback::Add);
+
+				this->capacity = this->length;
 			}
 
 			void AddCollection(const List<T>& elements)
@@ -254,6 +256,8 @@ namespace Bear
 					if(this->onCollectionLengthChanged)
 						this->onCollectionLengthChanged(this, nullptr, TypeOfCallback::Remove);
 				}
+
+				this->capacity = this->length;
 			}
 
 			void RemoveOnIndex(const ULInt& index)
@@ -308,6 +312,8 @@ namespace Bear
 
 				if (this->onCollectionLengthChanged)
 					this->onCollectionLengthChanged(this, nullptr, TypeOfCallback::Remove);
+
+				this->capacity = this->length;
 			}
 
 			void RemoveOnIndex(const ULInt& start, const ULInt& end)
@@ -366,6 +372,8 @@ namespace Bear
 				}
 
 				this->length -= (i + 1);
+
+				this->capacity = this->length;
 			}
 
 			template<bool RemoveAll = false>
@@ -443,6 +451,8 @@ namespace Bear
 							it = it->next;
 					}
 				}
+
+				this->capacity = this->length;
 			}
 
 			template<typename Collection, bool RemoveAll = false>
@@ -512,6 +522,8 @@ namespace Bear
 							it = it->next;
 					}
 				}
+
+				this->capacity = this->length;
 			}
 
 			virtual void Clear() override
@@ -531,6 +543,8 @@ namespace Bear
 
 				if (this->onCollectionLengthChanged)
 					this->onCollectionLengthChanged(this, nullptr, TypeOfCallback::Destroy);
+
+				this->capacity = this->length;
 			}
 
 			void Sort(const bool (*SortFunc)(const T& firstElement, const T& secondElement)) const

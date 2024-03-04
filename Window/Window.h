@@ -2,8 +2,6 @@
 
 #include "Bases.h"
 
-#include "Math/GraphicsMath/Vectors/Vectors.h"
-
 namespace Bear
 {
 	namespace Window
@@ -157,6 +155,12 @@ namespace Bear
 			Visible = 1
 		};
 
+		struct Vector2
+		{
+			int x;
+			int y;
+		};
+
 		class Window
 		{
 		private:
@@ -171,7 +175,7 @@ namespace Bear
 			Style style;
 			bool destroyed;
 		public:
-			using Vector = GraphicsMath::IVec2;
+			using Vector = Vector2;
 		private:
 			Vector minSize;
 			Vector maxSize;

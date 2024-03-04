@@ -109,7 +109,7 @@ namespace Bear
 		template<typename T, typename... Args>
 		constexpr inline Array<T, sizeof...(Args)> MakeArray(const Args... args)
 		{
-			Collections::Array<T, sizeof...(Args)> value(args...);
+			Collections::Array<T, sizeof...(Args)> value((T)args...);
 			return value;
 		}
 	}

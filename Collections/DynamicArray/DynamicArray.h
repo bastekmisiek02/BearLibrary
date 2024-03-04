@@ -849,7 +849,7 @@ namespace Bear
 
 			DynamicArray<T> returnValue;
 			returnValue.length = length;
-			returnValue.items = new T[length]{ args... };
+			returnValue.items = new T[length]{ (T)args... };
 			returnValue.capacity = length * 2;
 			return returnValue;
 		}

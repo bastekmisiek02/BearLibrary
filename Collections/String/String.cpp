@@ -1,6 +1,6 @@
 #include "String.h"
 
-#include "Math/Math/Math.h"
+#include <math.h>
 
 namespace Bear
 {
@@ -82,7 +82,9 @@ namespace Bear
 
 					if (i > BEAR_STRING_SIZE)
 					{
-						strHeap = new char[this->length + 1];
+						this->capacity = this->length + BEAR_DEFAULT_CAPACITY;
+
+						strHeap = new char[this->capacity + 1];
 						{
 							for (ULInt j = 0; j < this->length; j++)
 								strHeap[j] = src[j];
@@ -109,6 +111,7 @@ namespace Bear
 		String::String()
 			: strHeap(nullptr), strStack(), str(strStack)
 		{
+			this->capacity = BEAR_STRING_SIZE;
 		}
 
 		String::String(const char* src)
@@ -133,7 +136,9 @@ namespace Bear
 		
 			if (other.length > BEAR_STRING_SIZE)
 			{
-				str = new char[length + 1];
+				this->capacity = length + BEAR_DEFAULT_CAPACITY;
+
+				str = new char[this->capacity + 1];
 
 				for (ULInt i = 0; i < length; i++)
 					str[i] = other.str[i];
@@ -150,6 +155,8 @@ namespace Bear
 				strStack[length] = '0';
 
 				str = strStack;
+
+				this->capacity = BEAR_STRING_SIZE;
 			}
 		}
 
@@ -200,7 +207,7 @@ namespace Bear
 					break;
 				}
 
-				lastValue = (Math::Pow<ULInt>(10, length - i - 1));
+				lastValue = (pow(10, length - i - 1));
 				value += lastValue * (str[i] - '0');
 			}
 
@@ -231,7 +238,7 @@ namespace Bear
 					break;
 				}
 
-				lastValue = (Math::Pow<ULInt>(10, length - i - 1));
+				lastValue = (pow(10, length - i - 1));
 				value += lastValue * (str[i] - '0');
 			}
 
@@ -264,7 +271,7 @@ namespace Bear
 					for (LInt j = i; j > 0; j--)
 					{
 						if (str[j - 1] != '-')
-							returnValue += ((Math::Pow<LInt>(10, Math::Abs<LInt>(j - i))) * (str[j - 1] - '0'));
+							returnValue += ((pow(10, fabsl(j - i))) * (str[j - 1] - '0'));
 					}
 
 					break;
@@ -278,7 +285,7 @@ namespace Bear
 					if (str[j] == '\0')
 						break;
 
-					returnValue += (Math::Pow<double>(0.1, j - i) * (str[j] - '0'));
+					returnValue += (pow(0.1, j - i) * (str[j] - '0'));
 				}
 			}
 
@@ -301,6 +308,7 @@ namespace Bear
 
 			strStack[0] = '\0';
 			length = 0;
+			capacity = 0;
 
 			if (onCollectionLengthChanged)
 				onCollectionLengthChanged(this, nullptr, TypeOfCallback::Destroy);
@@ -616,7 +624,7 @@ namespace Bear
 				ptr = &returnValue.str[1];
 			}
 
-			Type tmp = Math::Abs<Type>(value);
+			Type tmp = fabsl(value);
 			Type multiplier = 100;
 			Type result = tmp / multiplier;
 			bool pass = false;
@@ -738,7 +746,7 @@ namespace Bear
 				ptr = &returnValue.str[1];
 			}
 
-			Type tmp = Math::Abs<Type>(value);
+			Type tmp = fabsl(value);
 			Type multiplier = 10000;
 			Type result = tmp / multiplier;
 			bool pass = false;
@@ -869,7 +877,7 @@ namespace Bear
 				ptr = &returnValue.str[1];
 			}
 
-			Type tmp = Math::Abs<Type>(value);
+			Type tmp = fabsl(value);
 			Type multiplier = 1000000000;
 			Type result = tmp / multiplier;
 			bool pass = false;
@@ -1000,7 +1008,7 @@ namespace Bear
 				ptr = &returnValue.str[1];
 			}
 
-			Type tmp = Math::Abs<Type>(value);
+			Type tmp = fabsl(value);
 			Type multiplier = 1000000000000000000;
 			Type result = tmp / multiplier;
 			bool pass = false;
@@ -1132,7 +1140,7 @@ namespace Bear
 				ptr = &returnValue.str[1];
 			}
 
-			Type tmp = Math::Abs<Type>(value);
+			Type tmp = fabsl(value);
 			Type multiplier = 1.0e+38f;
 			ULInt result = tmp / multiplier;
 
@@ -1255,7 +1263,7 @@ namespace Bear
 				ptr = &returnValue.str[1];
 			}
 
-			Type tmp = Math::Abs<Type>(value);
+			Type tmp = fabsl(value);
 			Type multiplier = 1.0e+308;
 			ULInt result = tmp / multiplier;
 
@@ -1374,7 +1382,7 @@ namespace Bear
 					break;
 				}
 
-				lastValue = (Math::Pow<ULInt>(10, length - i - 1));
+				lastValue = (pow(10, length - i - 1));
 				returnValue += lastValue * (value[i] - '0');
 			}
 
@@ -1415,7 +1423,7 @@ namespace Bear
 					break;
 				}
 
-				lastValue = (Math::Pow<ULInt>(10, length - i - 1));
+				lastValue = (pow(10, length - i - 1));
 				returnValue += lastValue * (value[i] - '0');
 			}
 
@@ -1518,7 +1526,7 @@ namespace Bear
 					for (LInt j = i; j > 0; j--)
 					{
 						if (value[j - 1] != '-')
-							returnValue += ((Math::Pow<LInt>(10, Math::Abs<LInt>(j - i))) * (value[j - 1] - '0'));
+							returnValue += ((pow(10, fabsl(j - i))) * (value[j - 1] - '0'));
 					}
 
 					break;
@@ -1532,7 +1540,7 @@ namespace Bear
 					if (value[j] == '\0')
 						break;
 
-					returnValue += (Math::Pow<double>(0.1, j - i) * (value[j] - '0'));
+					returnValue += (pow(0.1, j - i) * (value[j] - '0'));
 				}
 			}
 

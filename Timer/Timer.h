@@ -21,8 +21,8 @@ namespace Bear
 		private:
 			void* start;
 
-			bool* stop;
 			void* thread;
+			bool stop;
 		public:
 			Timer();
 			Timer(const Timer& timer) = delete;
@@ -32,7 +32,7 @@ namespace Bear
 		public:
 			void Reset();
 		public:
-			void Stop() const;
+			void Stop();
 
 			ULInt GetTime(const Duration& duration = Duration::Milliseconds) const;
 		};
